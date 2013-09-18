@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Quick D3 Review for Myself</title>
+		<script type="text/javascript" src="d3/d3.v3.js"></script>
+		<style type="text/css">
+
+		div.bar {
+			display: inline-block;
+			width: 20px;
+			height: 75px;
+			background-color: teal;
+		}
+
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+			
+
+
+			d3.select("body")
+				.append("p")
+				.text("Boom, new paragraph!");
+
+			var dataSet = [];
+			var numPoints = 30;
+
+			for (var i = 0; i < numPoints; i++) {
+				var nextNum = Math.random() * 30;
+				dataSet.push(nextNum);
+			}
+
+			var textFunction = function (t) {
+				return "This shit came from textFunction: " + t;
+			};
+
+			// d3.select("body")
+			// 	.selectAll("div")
+			// 	.data(dataSet)	//This is like a for loop, as I understand it. It will iterate the 						//following lines of code for each element in dataSet.
+
+			// 	.enter()		//enter() creates the element type in selectAll if one doesn't exist
+			// 					//to apply the current element of dataSet to
+			// 	.append("div")
+			// 	.text(function (t) {
+			// 		return "This came from an anonymous function or whatever: " + t;
+			// 	})
+			// 	.style("font-weight", "bold");
+
+			d3.select("body")
+				.selectAll("div")
+				.data(dataSet)
+				.enter()
+				.append("div")
+				.attr("class", "bar")
+				.style("height", function(d) {
+					return d * 5 + "px";
+				})
+				.style("margin-right", "2px");
+
+		</script>
+
+
+	</body>
+
+
+
+
+</html>

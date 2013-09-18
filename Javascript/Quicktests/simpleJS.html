@@ -1,0 +1,57 @@
+<html>
+	<head>
+
+		<!-- jQuery includes -->
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		
+		<script>
+			
+			jQuery( function() {
+				jQuery("#slider").slider();
+			});
+
+			jQuery( function() {
+				jQuery("#slider-range").slider({
+					range: true,
+					min: 50,
+					max: 100,
+					values: [60, 80],
+
+					slide: function(ev, ui) {
+						jQuery("#botValue").val(ui.values[0]);
+						jQuery("#upValue").val(ui.values[1]);
+					}
+
+				});
+			})
+
+		</script>
+
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+		<style>
+			
+			#slider, #slider-range {
+				width: 275px;
+				margin-left: 100px;
+			}
+
+			#botValue, #upValue {
+				border: 0;
+				color: #F6931F;
+				font-weight: bold;
+			}
+
+		</style>
+
+	</head>
+	<body>
+		<div id="slider"></div>
+		<div id="slider-range"></div>
+		<label>Bottom Value: </label>
+		<input type="text" id="botValue" />
+		<br>
+		<label>Upper Value: </label>
+		<input type="text" id="upValue" />
+	</body>
+</html>
