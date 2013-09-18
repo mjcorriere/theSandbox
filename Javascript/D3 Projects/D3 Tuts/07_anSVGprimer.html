@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	
+		<meta charset="utf-8">
+		<title>07 - An SVG Primer</title>
+		<!-- http://alignedleft.com/tutorials/d3/an-svg-primer -->
+		<script type="text/javascript" src="d3/d3.v3.js"></script>
+
+		<style type="text/css">
+
+		svg .pumpkin {
+			fill: yellow;
+			stroke: orange;
+			stroke-width: 3;
+		}
+
+
+		</style>
+
+	</head>
+
+	<body>
+		<script type="text/javascript">
+
+		</script>
+
+		<svg width="500" height="100">
+			<rect x="0" y="0" width="500" height="100" fill="#333333"/>
+			<!-- A couple of different ways of applying style to svg elements -->
+			<circle cx="175" cy="60" r="35" fill="white" stroke="cyan" stroke-width="2"/>
+			<circle cx="350" cy="20" r="15" class="pumpkin"/>
+			<!-- Multiple ways of applying transparency -->
+			<circle cx="50" cy="50" r="20" fill="rgba(180, 0, 128, .5)"/>
+			<circle cx="75" cy="50" r="20" fill="rgb(180, 0, 128" opacity=".5"/>
+			<!-- Opacity can be applied to the stroke only 
+				 Notice that the stroke is drawn from the edge outwards and inwards. It overlaps
+				 with the original shape. -->
+			<circle cx="100" cy="50" r="20" fill="red" stroke-width="5" stroke="rgba(0, 255, 225, .25)"/>
+
+		</svg>
+	</body>
+
+</html>

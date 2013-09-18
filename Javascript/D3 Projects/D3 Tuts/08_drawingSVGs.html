@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>	
+		<meta charset="utf-8">
+		<title>08 - Drawing SVGs</title>
+		<!-- http://alignedleft.com/tutorials/d3/drawing-svgs -->
+		<script type="text/javascript" src="d3/d3.v3.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+			var mySvg = d3.select("body").append("svg");
+			var svgWidth = 750;
+			var svgHeight = 250;
+
+			mySvg.attr("width", svgWidth)
+				.attr("height", svgHeight);
+			
+			// // A simple Circle.
+			// mySvg.append("circle")
+			// 	.attr("cx", svgWidth/2)
+			// 	.attr("cy", svgHeight/2)
+			// 	.attr("r", 40)
+			// 	.attr("fill", "orange");
+
+			var dataSet = [5, 10, 15, 20, 25];
+
+			// // A chained way of adding a bunch of circles based on the dataset
+			// mySvg.selectAll("circle")
+			// 	.data(dataSet)
+			// 	.enter()
+			// 	.append("circle")
+			// 	.attr("cx", function (d) { return d*20; })
+			// 	.attr("cy", svgHeight/2)
+			// 	.attr("r", function (d) { return d*2; });
+
+			// myCircles becomes a reference to all of the circles created by the following code
+
+			var myCircles = mySvg.selectAll("circle")
+								.data(dataSet)
+								.enter()
+								.append("circle");
+
+			// This mext part still doesn't make any sense to me. What is it about the code that makes
+			// d and i get populated by the correct values. There's a whole bunch of shit going on
+			// in the background that I don't get. I should probably read the docs instead of just
+			// blindly following the tutorial. Also, JS is an ugly annoying lanage.
+
+			myCircles.attr("cx", function(d, i) {
+							return( i * 50 + 25 );
+					})
+					.attr("cy", svgHeight / 2)
+					.attr("r", function (d) { return d; });
+
+			myCircles.attr("fill", "yellow")
+					.attr("stroke", "orange")
+					.attr("stroke-width", function (d) { return d / 2; });
+					
+		</script>
+	</body>
+
+</html>
