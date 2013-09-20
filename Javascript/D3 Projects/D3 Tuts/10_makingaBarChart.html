@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset='utf-8'>
+		<script type='text/javascript' src='d3/d3.v3.js'></script>
+		<title>10 - Making a Bar Chart</title>
+		<!-- http://alignedleft.com/tutorials/d3/making-a-bar-chart -->
+		<style type='text/css'>
+
+		div.bar {
+			display: inline-block;
+			width: 20px;
+			height: 500px;
+			margin-right: 2px;
+			background-color: teal;
+		}
+
+		</style>
+	</head>
+
+	<body>
+		<script type='text/javascript'>
+			
+			var svgWidth = 500;
+			var svgHeight = 100;
+
+			var svg = d3.select("body").append("svg")
+						.attr("width", svgWidth)
+						.attr("height", svgHeight);
+
+			var dataSet = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
+            			    11, 12, 15, 20, 18, 17, 16, 18, 23, 25 ];
+
+            var dataMax = Math.max.apply(Math, dataSet);
+
+			var barSpacing = svgWidth / dataSet.length;
+			var barPadding = 1;
+
+			var barStyle = {
+					"font-family": "sans-serif",
+					"font-size": "11px",
+					"fill": "white",
+					"text-anchor": "middle"
+			};
+
+		  // // Classic div method of the bar charts.
+		  //   d3.select("body").selectAll("div")
+		  //   	.data(dataSet)
+		  //   	.enter()
+		  //   	.append("div")
+		  //   	.attr("class", "bar")
+		  //   	.style("height", function(d) { 
+		  //   						var barHeight = d * 5;
+		  //   						return barHeight + "px"
+		  //   					}
+				// );
+
+			rects = svg.selectAll("rect")
+						.data(dataSet);
+
+			rects.enter()
+				.append("rect")
+				.attr("x", function(d, i) {
+					return i * barSpacing;
+				})
+				.attr("y", function(d, i) {
+					return svgHeight - (d * 4);
+				})
+				.attr("width", barSpacing - barPadding)
+				.attr("height", function(d, i) {
+					return d * 4;
+				})
+				.attr("fill", function(d, i) {
+					color = "rgb(0, 0, " + (d * 10) + ")";
+					return color;
+				});
+
+			textLabels = svg.selectAll("text")
+							.data(dataSet);
+
+			textLabels.enter()
+				.append("text")
+				.text(function(d) { return d; })
+				.attr(barStyle)
+				.attr("x", function(d, i) {
+					return i * barSpacing + barSpacing / 2;
+				})
+				.attr("y", function(d, i) {
+					return svgHeight - (d * 4) + 13;
+				})
+				.attr("width", barSpacing - barPadding)
+				.attr("height", function(d, i) {
+					return d * 4;
+				});
+
+
+		</script>
+	</body>
