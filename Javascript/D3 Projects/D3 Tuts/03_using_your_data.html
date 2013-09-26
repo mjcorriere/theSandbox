@@ -1,0 +1,39 @@
+<!DOCTYPE = html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>03 Using Your Data</title>
+		<script type="text/javascript" src="d3/d3.v3.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+			
+			var dataSet = [1, 2, 5, 8, 12, 15, 21, 25, 30];
+
+			d3.select("body").selectAll("p")
+				.data(dataSet)
+				.enter()
+				.append("div")
+				.text(	function( d ) {
+							return "Dataset: " + d + " ";
+						}
+				)
+				.style("color", function( d ) {
+									if (d > 12) {
+										return "red";
+									} else {
+										return "black";
+									}
+				});
+
+			// This one has a bit of confusing code in it. However, this is a function of
+			// javascript / D3 being weird. The reason we just pass a function as an argument
+			// to .text() is that text expects a function (or a STATIC string) as an argument.
+			// Therefore we can't pass d directly. d in this case takes on the current value of
+			// dataSet. Same goes for style() and many other D3 methods. They expect a function
+			// as an argument. Apparently the power of this will become clear as I do more
+			// tutorials.
+
+		</script>
+	</body>
+ </html>
