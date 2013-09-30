@@ -1,0 +1,45 @@
+	<!--Ember and D3 Meetup
+		Held at the Cambridge Innovation Center, 5th floor, 1 Broadway Cambridge
+		Sept 25, 2013 @ 6:45 pm 
+		-->
+
+
+<!-- Personal Question
+		What is application routing?
+		* Routing is fundamental to Ember
+
+		What is 'MVC' in 'Javascript MVC' ?
+
+		What is type='text/x-handlebars'?
+
+
+ -->
+
+ <!-- Ember Notes
+	His dashboard mockup uses
+	d3 js
+	bootstrap
+	ember-data (beta 2)
+	moment js
+	bootstrap -atepicker
+	his d3 charts
+
+	Scaffolding
+
+	A resource is the bit that you expose to the user. His example exploses the month as the resource. This is what the user
+	asks for to begin Ember generating the content. This resource ends up in the url /../mar-2013.html
+
+	The adapter is what gets the data into your application. You can chage the adapter from the fixture adapter to a real data
+	adapter that pulls things from the server. The fixture adapter allows you to hook up your app to a bunch of 'fake data' to test things out.
+
+	Ember components can be made such that you can plug them into other Ember apps easily. he uses his Datepicker as an example as something that could be used over and over again in other apps.
+
+  	Consider two way data binding. He makes sure his component binds to the 'month' data so that the component updates when the month updates. This takes care of the scenario where the month gets updated WIHOUT the user event of clicking on the datepicker directly.
+
+  	A controller wraps your model. When you click the month, the controller requests that months data model. When you want a new month, the controller is persistent and sits there, swapping the current month model for the requested model.
+
+  	The takeaway here is you make components of D3 stuff in Ember so they are reusable. This is how you effectively combine these technologies.
+
+  	Check out Asana, javascript task something or other web app.
+
+  -->
