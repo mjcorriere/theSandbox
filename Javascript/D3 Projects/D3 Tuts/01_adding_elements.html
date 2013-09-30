@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3 Test</title>
+		<script type="text/javascript" src="d3/d3.v3.js"></script>
+	</head>
+
+	<body>
+		<script type="text/javascript">
+			//Here we grab the body element from the DOM. Then, we append a
+			//paragraph element to the END of the element. This means we add
+			//it just before the closing body tag. Finally, we set the text
+			//attribute of the text element to the argument given. Simple!
+			d3.select("body").append("p").text("New Paragraph assholes!");
+
+			//Here is an alternate method of executing the same thing without
+			//using the very long chaining method of methods.
+
+			var bodyElement = d3.select("body");
+			var paragraph = bodyElement.append("p");
+
+			paragraph.text("Here is another one without chaining!");
+
+		</script>
+	</body>
+</html>	

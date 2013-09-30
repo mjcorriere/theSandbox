@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>02 Binding Data</title>
+		<script type="text/javascript" src="d3/d3.v3.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+			var dataSet = [1.5, 2, 4, -5, 13];
+
+			d3.select("body").selectAll("p")
+				.data(dataSet)
+				.enter()
+				.append("p")
+				.text("New paragraph buddy");
+
+			// That block of code requires some information! Explanation, I mean.
+			// When the page begins there are no p elements. When I ask D3 to select
+			// all of the p elements in the body, it returns to me an empty selector.
+			// I now call data(), which counts and parses all of the values in dataSet.
+			// At this point, everything following data() is executed n times, where n
+			// is the length of the dataSet array.
+
+			// enter() creates a new DOM element if none exists to bind your dataSet to.
+			// In this case there are 0 p elements and so enter() will create a brand new
+			// p element on every iteration. Every p element is then bound to a value in
+			// dataSet.
+
+			// Opening a web console in my browsers Element Inspector yields this and
+			// executing console.log(d3.selectAll("p")) yields: 
+
+			// [21:10:00.244] undefined
+			// [21:10:00.248] [[{__data__:1.5}, {__data__:2}, {__data__:4}, {__data__:-5}, {__data__:13}]]
+
+		</script>
+	</body>
+</html>
