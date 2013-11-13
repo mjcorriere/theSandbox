@@ -28,7 +28,7 @@ cardTestIncX   = 50
 
 cardsPresent = 0
 
-path = "C:\\Users\\Mark\\Documents\\pbot Testing\\boardimages"
+path = "C:\\Documents and Settings\\NotMark\\My Documents\\Programming\\theSandbox\PBot\\boardimages"
 
 os.chdir(path)
 imglist = os.listdir(path)

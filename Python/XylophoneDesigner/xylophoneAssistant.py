@@ -8,7 +8,7 @@ Created on Sun Sep 22 08:24:32 2013
 from math import sqrt, ceil, floor
 import string, itertools
 
-def xyloMaker (t = .12, matl = 'Aluminum', scale = [24, 25, 26]):
+def xyloMaker (t = .12, matl = 'Aluminum', scale = [2, 2, 3, 2, 3]):
   
     # Dictionary of materials. Stores the modulus and density as the value
     # of each material key. [modulus, density]
@@ -38,7 +38,6 @@ def xyloMaker (t = .12, matl = 'Aluminum', scale = [24, 25, 26]):
     c = 1.028 * t_m * sqrt(E / p)
     
     L = [sqrt(c / f) for f in scale]
-    
     L_in = [i/.0254 for i in L]    
     
     tube_L_in = [v_sound / (4.0 * f * .0254)  for f in scale]
@@ -51,6 +50,7 @@ def makeScale(rootNote = 'B2', key = 'major', length = 8):
     
     f0 = 440    #A 440 Hz
     noteMap = ['C', 'Cs', 'D', 'Eb', 'E', 'F', 'Fs', 'G', 'Gs', 'A', 'Bb', 'B']
+
     majorIntervals = [2, 2, 3, 2, 3]
     minorIntervals = [3, 2, 2, 3, 2]
     
@@ -75,22 +75,19 @@ def makeScale(rootNote = 'B2', key = 'major', length = 8):
     noteFreq = f0 * 2.0 ** (interval/12.0)
     
     
-    fuckingfuckyou = []    
+    intervalList = []    
 
     for i in range(len(scaleIntervals)):
         if i == 0:
-            fuckingfuckyou.append(scaleIntervals[i])
+            intervalList.append(scaleIntervals[i])
         else:
-            fuckingfuckyou.append(scaleIntervals[i] + fuckingfuckyou[i-1])
+            intervalList.append(scaleIntervals[i] + intervalList[i-1])
         
-    print fuckingfuckyou
+    print intervalList
     
-    finalshit = [f0 * 2.0 ** ((i+interval)/12.0) for i in fuckingfuckyou]
+    finalshit = [f0 * 2.0 ** ((i+interval)/12.0) for i in intervalList]
     finalshit.insert(0, noteFreq)    
-    print finalshit
-    
-    print note + str(octave) + ': ' + str(noteFreq)
-    
+   
     return finalshit
     
 def noteSearch(freq):
@@ -124,7 +121,7 @@ def noteSearch(freq):
     return str(noteMap[freqNote]) + str(int(freqOctave))
 
 
-xylophone = xyloMaker(.12, 'aluminum', makeScale('Fs2', 'major', 5))
+xylophone = xyloMaker(.125, 'aluminum', makeScale('Cs3', 'major', 9))
 
 f = open('xylo.html', 'w')
 

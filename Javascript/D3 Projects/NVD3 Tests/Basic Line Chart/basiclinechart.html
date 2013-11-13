@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	
+	<meta charset='utf-8'>
+	<title>Basic Linechart, Baby!</title>
+	<link href='css/nv.d3.css' rel='stylesheet'>
+
+	<!-- Note to Future Mark
+			Make sure you define d3 BEFORE you define NVD3.
+			NVD3 has a dependency on D3. If you don't include
+			D3 first you are in for a world of aggrivation trying
+			to figure out why your plot isn't showing up.
+
+			ALSO: The debugging console is your friend.
+
+	  -->
+	<script src='js/d3.v3.js' type='text/javascript'></script>
+	<script src='js/nv.d3.js' type='text/javascript'></script>
+
+</head>
+<body>
+	
+	<svg style='height: 350px'/>
+	
+	<script type='text/javascript'>
+
+		function plotData() {
+
+			var sinData = [],
+				cosData = [];
+
+			for (var i = 0; i < 100; i++) {
+				
+				sinData.push({ 
+					x: i, y: 1.5 * Math.sin(i/5)
+				});
+				
+				cosData.push({ 
+					x: i, y: .5 * Math.cos(i/15)
+				});
+			}
+
+			return [
+				{
+					key: 'Mr. Cosine',
+					values: cosData,
+					color: '#DDFF66'
+				},
+				{
+					key: 'Mr. Sin',
+					values: sinData,
+					color: '#339922'
+				}
+			];
+		}
+
+		nv.addGraph( function() {
+			
+			var chart = nv.models.lineWithFocusChart();
+
+			chart.xAxis
+				.axisLabel('The Big X')
+				.tickFormat(d3.format('.2f'));
+
+			chart.yAxis
+				.axisLabel('The Big Y')
+				.tickFormat(d3.format('.2f'));
+
+			chart.margin(
+				{left: 75}
+			);
+
+			d3.select('svg')
+				.datum(plotData())
+				.call(chart);
+
+			return chart;
+
+		});
+	
+	</script>
+</body>
+
+</html>
