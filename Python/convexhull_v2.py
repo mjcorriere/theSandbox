@@ -1,4 +1,3 @@
-
 from random import randint
 from numpy import linalg
 from matplotlib.pyplot import *
@@ -11,26 +10,29 @@ class Vertex(object):
 		self.y = _y
 
 	def __str__(self):
-		pass
+		return str((self.x, self.y))
 
 class Edge(object):
 
 	def __init__(self, _v0, _v1):
 
-		self.v0 = _v0
-		self.v1 = _v1
+          self.v0 = _v0
+          self.v1 = _v1
 
 	def __str__(self):
-		pass
-
+     
+          v0 = (self.v0.x, self.v0.y)
+          v1 = (self.v1.x, self.v1.y)
+         
+          return 'v0: ' + str(v0) + ' v1: ' + str(v1)
 
 class Hull(object):
 
-	edgeList = []
+#	edgeList = []
 
 	def __init__(self, _e0):
-
-		edgeList.append(_e0)
+         self.edgeList = []
+         self.edgeList.append(_e0)
 
 	def __iter__(self):
 
@@ -39,10 +41,27 @@ class Hull(object):
 
 	def getEdgeGenerator(self):
 		return iter(self).next
+  
+	def getVisibleEdges(self, vertex):
+            
+		visibleEdges = []
+          
+		for index, edge in enumerate(self.edgeList):
 
+			vec1 = [edge.v0.x, edge.v0.y, 1]
+			vec2 = [edge.v1.x, edge.v1.y, 1]
+			vec3 = [vertex.x,  vertex.y,  1]
+            
+			M = [vec1] + [vec2] + [vec3]
+            
+			if linalg.det(M) > 0:
+				visibleEdges.append(index)
+    
+		return visibleEdges
+               
 	def addEdge(E):
 
-		edgeList.append(E)
+		self.edgeList.append(E)
 
 class PointCloud(object):
 
@@ -60,29 +79,3 @@ class PointCloud(object):
 
 	def getVertexGenerator(self):
 		return iter(self).next
-
-def leftOfEdge(vertex, edge):
-
-	vec1 = [edge.v0.x, edge.v0.y, 1]
-	vec2 = [edge.v1.x, edge.v1.y, 1]
-	vec3 = [vertex.x,  vertex.y,  1]
-
-	M = [vec1] + [vec2] + [vec3]
-
-	return linalg.det(M)
- 
- 
-pc = PointCloud(30, [0, 50], [0, 50])
-
-pairs = [(v.x, v.y) for v in pc]
-
-data = zip(*pairs)
- 
-fig = figure()
-ax = fig.add_subplot(111)
-
-for n, pt in enumerate(pairs):
-    ax.annotate(str(n), xy=pt, xytext=(3, 3),
-                    textcoords='offset points')
-
-ax.scatter(*data)
