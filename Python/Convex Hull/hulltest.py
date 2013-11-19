@@ -5,7 +5,7 @@ Created on Wed Nov 13 17:04:50 2013
 @author: mcorriere
 """
 
-import convexhull as chull
+import convexhull_v2 as chull
 import matplotlib.pyplot as plt
  
 xRange = [0, 100]
