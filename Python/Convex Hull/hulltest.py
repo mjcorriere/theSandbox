@@ -7,7 +7,11 @@ Created on Wed Nov 13 17:04:50 2013
 
 import convexhull_v2 as chull
 import matplotlib.pyplot as plt
- 
+import matplotlib.animation as animation
+import csv
+
+from itertools import chain
+
 xRange = [0, 100]
 yRange = [0, 100]
 
@@ -82,3 +86,24 @@ ani = animation.FuncAnimation(fig, run, data_gen, blit=True, interval=500,
 
 plt.show()
 
+def writeToFiles(pointFileName, edgeFileName):
+    
+    pointFile = open(pointFileName, 'wb')
+    edgeFile = open(edgeFileName, 'wb')
+    
+    pointFile.write('xs,ys\n')
+    edgeFile.write('xs,ys\n')    
+    
+    pfwrite = csv.writer(pointFile, delimiter=',')
+    efwrite = csv.writer(edgeFile, delimiter=',')
+    
+    for point in points:
+        pfwrite.writerow(point)
+        
+    edgesFlat = list(chain(*edges))
+        
+    for edge in edgesFlat:
+        efwrite.writerow(edge)
+        
+    pointFile.close()
+    edgeFile.close()

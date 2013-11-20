@@ -51,15 +51,6 @@
 
 	</style>
 
-	<script type='text/javascript'>
-
-		d3.select('svg')
-			.append('rect')
-			.attr('width', 50)
-			.attr('height', 100);
-
-	</script>
-
 </head>
 <body>
 	<div class='main'>
@@ -68,11 +59,11 @@
 			<rect width='100%' height='100%' class='bgRect'/>
 		</svg>
 		<div class='buttonArray'>
-			<a href='#' class='btn btn-success btn-large btn-array'>
+			<a href='#' class='btn btn-success btn-large btn-array' id='playButton'>
 				<i class='icon-white icon-play'></i> Play</a>
-			<a href='#' class='btn btn-inverse btn-large btn-array'> 
+			<a href='#' class='btn btn-inverse btn-large btn-array' id='pauseButton'> 
 				<i class='icon-white icon-pause'></i> Pause</a>	
-			<a href='#' class='btn btn-danger btn-large btn-array'>
+			<a href='#' class='btn btn-danger btn-large btn-array' id ='resetButton'>
 				<i class='icon-white icon-fast-backward'></i> Reset</a>
 		</div>
 		<p class='desc'>
@@ -84,6 +75,7 @@
 	<script type='text/javascript'>
 		
 		var dataset = []
+		var edgeData = []
 
 		var xScale = d3.scale.linear()
 					.domain([0, 100])
@@ -93,13 +85,43 @@
 					.domain([0, 100])
 					.range([30, 410]);
 
-		d3.csv("pointData.csv", function(data) {
+		var lineFunction = d3.svg.line()
+							.x( function(d) { return xScale(d[0]); })
+							.y( function(d) { return yScale(d[1]); });
+
+		d3.csv("ptest.csv", function(data) {
 
 			dataset = data.map( function(d) { 
 		  		return [ +d["xs"], +d["ys"] ]; 
 		  	});
 
+		  	loadEdges();	
+
+		});
+
+		function loadEdges() {
+			d3.csv('etest.csv', function(data) {
+				edgeData = data.map( function(d) {
+					return [ +d['xs'], +d['ys'] ];
+				});
+
+				console.log('edgeData ' + edgeData);
+				dataReady();
+			});
+
+		}
+
+		function dataReady() {
+
 			svg = d3.select('svg')
+
+			svg.append('path')
+				.attr('d', lineFunction(edgeData))
+				.attr('stroke', 'green')
+				.attr('stroke-width', 1)
+				.attr('fill', 'blue')
+				.attr('fill-opacity', .15);
+
 
 			svg.selectAll('circle')
 				.data(dataset)
@@ -114,19 +136,57 @@
 				.attr('r', 4)
 				.attr('fill', 'steelblue')
 				.attr('stroke', 'black')
-				.style('opacity', 0);
+				.on('mouseover', function() {
+					d3.select(this)
+						.style('fill', 'yellow')
+						.transition()
+						.delay(10)
+						.duration(250)
+						.attr('r', 10);
+				})
+				.on('mouseout', function() {
+					d3.select(this)
+						.style('fill', 'steelblue')
+						.transition()
+						.delay(10)
+						.duration(250)
+						.attr('r', 4);
+				})
+				.style('opacity', 0)
+				.transition()
+					.delay(function (d, i) {
+						return 250 + 5*i;
+					})
+					.duration(1000)
+					.style('opacity', 1);
 
-			dots = d3.selectAll('circle');
+			// Now draw the lines ... Maybe ...
 
-			dots.transition()
-				.duration(1000)
-				.style('opacity', 1);
+			d3.select('#resetButton')
+				.on('click', resetCanvas);
 
-		});
+		}
 
+		function resetCanvas() {
 
+			console.log('reset called');
+
+			d3.selectAll('circle')
+				.transition()
+					.delay(10)
+					.duration(500)
+					.style('opacity', 0)
+					.each('end', function() {
+						d3.select(this)
+							.transition()
+								.delay(function (d, i) {
+									return 250 + 5*i;
+								})
+								.duration(1000)
+								.style('opacity', 1);
+					});
+		}
 
 	</script>
-
 
 </body>
