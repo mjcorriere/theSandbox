@@ -49,6 +49,10 @@
 			font-weight: lighter;
 		}
 
+		.frameRate {
+			width: 35px;
+		}
+
 	</style>
 
 </head>
@@ -65,6 +69,7 @@
 				<i class='icon-white icon-pause'></i> Pause</a>	
 			<a href='#' class='btn btn-danger btn-large btn-array' id ='resetButton'>
 				<i class='icon-white icon-fast-backward'></i> Reset</a>
+			<input type='text' class='frameRate' id='frameRate' >
 		</div>
 		<p class='desc'>
 			A simple implementation of the incremental convex hull algorithm. 
@@ -74,8 +79,19 @@
 
 	<script type='text/javascript'>
 		
-		var dataset = []
-		var edgeData = []
+		var pointData = [];
+		var edgeData = [];
+
+		var frames = [];
+		var frameNo = 0;
+		var defaultFrameRate = 750, frameRate = 750;
+
+		document.getElementById('frameRate').value = defaultFrameRate
+
+		var intervalID = null;
+
+		var svg = d3.select('svg');
+		var thePath = svg.append('path');
 
 		var xScale = d3.scale.linear()
 					.domain([0, 100])
@@ -89,23 +105,60 @@
 							.x( function(d) { return xScale(d[0]); })
 							.y( function(d) { return yScale(d[1]); });
 
-		d3.csv("ptest.csv", function(data) {
+		var animate = function() {
+							
+			if (frameNo < frames.length) {
 
-			dataset = data.map( function(d) { 
+				thePath
+					.attr('d', lineFunction(frames[frameNo]['goodHull']))
+					.attr('stroke', 'green')
+					.attr('stroke-width', 1)
+					.attr('fill', 'blue')
+					.attr('fill-opacity', .15);
+
+				svg.select('#currentCircle').remove();
+
+				svg.append('circle')
+					.attr('id', 'currentCircle')
+					.attr('cx', xScale(frames[frameNo]['POI']['x']))
+					.attr('cy', yScale(frames[frameNo]['POI']['y']))
+					.attr('r', 10)
+					.attr('stroke', 'black')
+					.attr('stroke-width', '2')
+					.attr('fill-opacity', '0')
+					.attr('opacity', '0')
+						.transition()
+						.duration(350)
+						.attr('opacity', '1');
+					// .attr('fill', 'red');
+
+				d3.select('#c' + frameNo)
+					.transition()
+					.delay(350)
+					.duration(350)
+					.attr('fill', 'yellow');
+
+				frameNo++;
+
+			} else {
+				clearInterval(animate);
+			}
+		};
+
+		d3.csv("pdata.csv", function(data) {
+
+			pointData = data.map( function(d) { 
 		  		return [ +d["xs"], +d["ys"] ]; 
 		  	});
 
-		  	loadEdges();	
+		  	loadJSON();	
 
 		});
 
-		function loadEdges() {
-			d3.csv('etest.csv', function(data) {
-				edgeData = data.map( function(d) {
-					return [ +d['xs'], +d['ys'] ];
-				});
+		function loadJSON() {
 
-				console.log('edgeData ' + edgeData);
+			d3.json("frames.json", function(error, json) {
+				frames = json;
 				dataReady();
 			});
 
@@ -113,20 +166,13 @@
 
 		function dataReady() {
 
-			svg = d3.select('svg')
-
-			svg.append('path')
-				.attr('d', lineFunction(edgeData))
-				.attr('stroke', 'green')
-				.attr('stroke-width', 1)
-				.attr('fill', 'blue')
-				.attr('fill-opacity', .15);
-
-
 			svg.selectAll('circle')
-				.data(dataset)
+				.data(pointData)
 				.enter()
 				.append('circle')
+				.attr('id', function(d, i) {
+					return 'c' + i;
+				})
 				.attr('cx', function(d) {
 					return xScale(d[0]);
 				})
@@ -160,10 +206,17 @@
 					.duration(1000)
 					.style('opacity', 1);
 
-			// Now draw the lines ... Maybe ...
-
 			d3.select('#resetButton')
 				.on('click', resetCanvas);
+
+			d3.select('#pauseButton')
+				.on('click', pauseIt);
+
+			d3.select('#playButton')
+				.on('click', play);
+
+			d3.select('#frameRate')
+				.on('input', changeFrameRate);
 
 		}
 
@@ -180,13 +233,65 @@
 						d3.select(this)
 							.transition()
 								.delay(function (d, i) {
-									return 250 + 5*i;
+									return 100 + 5*i;
 								})
-								.duration(1000)
-								.style('opacity', 1);
+								.duration(500)
+								.style('opacity', 1)
+								.attr('fill', 'steelblue');
 					});
+
+			clearInterval(intervalID);
+			frameNo = 0;
+			intervalID = setInterval(animate, frameRate);
+
+		}
+
+		function pauseIt() {
+			console.log('pausing');
+
+			clearInterval(intervalID);
+
+		}
+
+		function play() {
+			console.log('playing!');
+			intervalID = setInterval(animate, frameRate);
+		}
+
+		function changeFrameRate() {
+			var FR = document.getElementById('frameRate').value;
+			
+			if (isNaN(FR)) {
+				console.log('not a number');
+			} else {
+				frameRate = FR;
+				clearInterval(intervalID);
+				intervalID = setInterval(animate, frameRate);
+			}
+			
 		}
 
 	</script>
 
 </body>
+
+<!-- For each frame of the convex hull algorithm we must store:
+		* Current good hull
+		* Point being considered
+		* Edges being deleted
+		* Intermediate hull (edges missing)
+		** Repeat => Current good hull ...
+
+		The frame datastructure should look like:
+		
+		[ { goodHull: [points], 
+				pointOfInterest: [x, y],
+				edgesToDelete: [ edgeIDs ],
+				intermediateHull: [points],
+			},
+
+			{} ... }
+
+		}
+
+ -->

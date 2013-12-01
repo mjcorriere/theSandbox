@@ -19,6 +19,10 @@ pointCloud = chull.PointCloud(100, xRange, yRange)
 
 ## <hackish>
 ## This should be cleaned up.
+
+## FIX: Add the first edge in -both- directions. This way, one is guaranteed
+## to be deleted and the hull can continue as normal. This whole part can then
+## disappear.
 vtxGenerator = pointCloud.getVertexGenerator()
 
 seedEdge = chull.Edge(vtxGenerator(), vtxGenerator())

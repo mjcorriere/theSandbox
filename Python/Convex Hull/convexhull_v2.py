@@ -1,6 +1,7 @@
 
 from random import randint
 from numpy import linalg
+from itertools import chain
 from matplotlib.pyplot import *
 
 class Vertex(object):
@@ -49,6 +50,9 @@ class Hull(object):
 	def __init__(self, _e0):
 
 		self.edgeList.append(_e0)
+		self.frameNo = -1
+
+		self.frameList = []
 
 	def __iter__(self):
 
@@ -59,7 +63,16 @@ class Hull(object):
 		return iter(self).next
 
 	def addVertex(self, vertex):
-		
+
+		self.frameNo += 1
+		self.frame = {}
+
+		self.frame['goodHull'] = list( chain( \
+                                      *[edge.pair for edge in self.edgeList] ))
+		self.frame['POI'] = {'x':vertex.x, 'y':vertex.y}
+
+		self.frameList.append(self.frame)
+
 		edgesToDelete = []
 
 		for index, edge in enumerate(self.edgeList):
