@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+	<head>
+		<meta charset = 'utf-8'>
+		<title>Categorees</title>
+		<link rel='stylesheet' href='css/semantic.css'>
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
+		<style type='text/css'>
+
+			html,
+			body,
+			input {
+				font-family: 'Open Sans', sans-serif;
+			}
+
+			tr:hover {
+				background-color: #666;
+			}
+
+		</style>
+	</head>
+
+<body>
+
+	<div class='ui relaxed grid'>
+		<div class='five wide column'>
+	
+			<h2 class='ui header'>Item Input</h2>
+	
+			<div class='ui raised form segment'>
+				<div class='field'>
+					<label>Item</label>
+					<div class='ui left labeled icon input'>
+						<input id='itemEnter' type='text' placeholder='Enter Item'/>
+						<i class='gift icon'></i>
+					</div>
+				</div>
+				<div class='field'>
+					<label>Category</label>
+					<div class='ui labeled action input'>
+						<input id='category' type='text' placeholder='Enter Category'>
+						<div class='ui icon button' id='lockButton'>
+							<i class='lock icon'></i>
+						</div>						
+					</div>
+				</div>
+				<div class='ui blue submit button'>Add!</div>
+			</div>
+		</div>
+		<div class='eleven wide column'>
+			
+			<h2 class='ui header'>Item List</h2>
+			<table class ='ui inverted table segment' id='itemTable'>
+				<thead>
+					<tr>
+						<th>Item</th>
+						<th>Category</th>
+						<th>Qty</th>
+					</tr>
+				</thead>
+				<tr>
+					<td>Test</td>
+					<td>Next</td>
+					<td>4</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+
+	<script type='text/javascript'>
+
+		textBox = document.getElementById('itemEnter');
+		list = document.getElementById('list');
+
+		itemTable = document.getElementById('itemTable');
+
+		function response(e) {
+			if (e.keyCode == 13) {
+				addToList(textBox.value);
+			}
+		}
+
+		textBox.onkeyup = response;
+		category.onkeyup = response;
+
+		function addToList(txt) {
+
+			newRow = document.createElement('tr');
+			newRow.innerHTML = '<td>' + txt + '</td><td>' +
+									document.getElementById('category').value + '</td><td>7</td>';
+
+			itemTable.appendChild(newRow);
+
+			textBox.value  = '';
+			category.value = '';
+
+			textBox.focus();
+
+		}
+
+
+	</script>
+
+</body>
+</html>

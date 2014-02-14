@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<meta charset='utf-8'>
+		<title>The Financillator</title>
+		
+		<link rel='stylesheet' href='css/semantic.css'>
+		<link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Open+Sans'>
+
+		<style type='text/css'>
+			
+			html,
+			body,
+			input,
+			.ui.input input {
+				font-family: 'Open Sans', sans-serif;
+			}
+
+			body {
+				background-image: url('images/escheresque.png');
+				background-repeat: repeat;
+			}
+
+			/* Get rid of the annoying bottom margin on the 'field' elements */
+			.ui.form .field.no-margin {
+				margin: 0em 0em 0em;
+			}
+
+			.ui.lineitem.segment {
+				margin: .4em 0em;
+				padding: .4em;
+			}
+
+			.pct {
+				position: relative;
+				left: 1em;
+				top: 2em;
+			}
+
+		</style>
+	</head>
+
+	<body>
+
+		<div class='ui grid'>
+			<div class='eight wide column' id='itemTable'>
+				
+				<div class='ui teal button' id='goTime'>Print Vals</div>
+				<div class='ui red button' id='addRow'>Add Row</div>
+
+				<div class='ui raised form lineitem segment'>				
+					<div class='inline fields'>
+						<div class='field no-margin'>
+							<div class='ui left icon input'>
+								<input class='itemName' placeholder='Item name' type='text'>
+								<i class='attachment icon'></i>
+							</div>
+						</div>
+						<div class='field no-margin'>
+							<div class='ui left icon input'>
+								<input class='value' placeholder='0.00' type='text' size='4'>
+								<i class='dollar icon'></i>
+							</div>
+						</div>
+						<div class='field no-margin'>
+							<div class='ui left icon input'>
+								<input class='multi' type='text' size='1'>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class='ui raised form lineitem segment'>
+					<div class='inline fields'>
+						<div class='field no-margin'>
+							<div class='ui left icon input'>
+								<input placeholder='Item name' type='text'>
+								<i class='attachment icon'></i>
+							</div>
+						</div>
+						<div class='field no-margin'>
+							<div class='ui left icon input'>
+								<input placeholder='0.00' type='text' size='4'>
+								<i class='dollar icon'></i>
+							</div>
+						</div>
+						<div class='field no-margin'>
+							<div class='ui left icon input'>
+								<input type='text' size='1'>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+			
+		<script type='text/javascript'>
+
+			globalID = 6;
+
+			itemTable = document.getElementById('itemTable');
+
+			function printIt() {
+
+				inputs = document.getElementsByTagName('input');
+
+				for (i=0; i < inputs.length; i++) {
+					console.log(inputs[i].value);
+				}
+
+			}
+
+			function addRow() {
+
+				newRow = document.createElement('div');
+				newRow.className = 'ui raised form lineitem segment';
+
+				newRow.innerHTML = "<div class='inline fields'> \
+						<div class='field no-margin'> \
+							<div class='ui left icon input'> \
+								<input placeholder='Item name' type='text' id='item" + globalID + "'> \
+								<i class='attachment icon'></i> \
+							</div> \
+						</div> \
+						<div class='field no-margin'> \
+							<div class='ui left icon input'> \
+								<input placeholder='0.00' type='text' size='4'> \
+								<i class='dollar icon'></i> \
+							</div> \
+						</div> \
+						<div class='field no-margin'> \
+							<div class='ui left icon input'> \
+								<input type='text' size='1'> \
+							</div> \
+						</div> \
+					</div>"
+
+				itemTable.appendChild(newRow);
+
+				globalID += 1;
+
+			}
+
+			testButton = document.getElementById('goTime');
+
+			testButton.onclick = printIt;
+
+			addRowButton = document.getElementById('addRow');
+
+			addRowButton.onclick = addRow;
+
+		</script>
+
+	</body>
+</html>
+
