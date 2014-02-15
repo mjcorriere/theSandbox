@@ -18,10 +18,40 @@
 	<script src='js/d3.v3.js' type='text/javascript'></script>
 	<script src='js/nv.d3.js' type='text/javascript'></script>
 
+	<style type="text/css">
+
+		.firstChart {
+			display: block;
+			overflow: hidden;
+		}
+
+		.secChart {
+			float: right;
+			display: block;
+			background-color: #F33;
+
+			width: 350px;
+		}
+
+		p {
+			background-color: #3F3;
+			display: inline;
+		}
+
+	</style>
+
+
 </head>
 <body>
-	
-	<svg style='height: 350px'/>
+
+	<div class='secChart'>
+		<svg id='ggplot' style='width: 350px; height: 350px' />
+	</div>
+
+	<div class='firstChart'>	
+		<svg id='linechart' style='height: 350px'/>
+	</div>
+
 	
 	<script type='text/javascript'>
 
@@ -71,13 +101,36 @@
 				{left: 75}
 			);
 
-			d3.select('svg')
+			d3.select('#linechart')
 				.datum(plotData())
 				.call(chart);
 
 			return chart;
 
 		});
+
+		nv.addGraph( function () {
+			var chart = nv.models.lineChart();
+
+			chart.xAxis
+				.axisLabel('New X')
+				.tickFormat( d3.format('.2f') );
+
+			chart.yAxis
+				.axisLabel('New Y')
+				.tickFormat( d3.format('.2f') );
+
+			chart.margin(
+				{ left: 100 }
+			);
+
+			d3.select('#ggplot')
+				.datum(plotData())
+				.call(chart);
+
+			return chart;
+
+		});		
 	
 	</script>
 </body>
