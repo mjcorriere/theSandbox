@@ -1,17 +1,45 @@
 
+/********
+ * Setup the google map
+ *
+ */
+
+ function init_map() {
+ 	
+ 	var mapOptions = {
+ 		zoom: 		14,
+ 		center: 	new google.maps.LatLng(40.8054567,-73.9654747),
+ 		mapTypeId: 	google.maps.MapTypeId.ROADMAP
+ 	};
+
+	map = new google.maps.Map( document.getElementById("gmap_canvas"), mapOptions );
+
+	}
+	
+google.maps.event.addDomListener(window, 'load', init_map);
+
+
+/****
+ * State variables for handling button clicks and draw modes
+ *
+ */
+
+
+/* Start line state and styling */
 var drawingStartLine 	= false,
 	startLineDrawn		= false,
-	startLine = new google.maps.Polyline({
+	startLine 			= new google.maps.Polyline({
 		strokeColor: '#006600',
 		strokeOpacity: 1.0,
 		strokeWeight: 1.5,
 		editable: true
 	});
 
+drawModeButton = document.getElementById('drawModeButton');
+drawModeButton.onclick = toggleDrawStartLine;
+
 var sessionData = [];
 var trackCoordinates = [];
-
-var drawingManager;
 
 var reader = new FileReader();
 
@@ -107,42 +135,9 @@ function uploadComplete() {
 	map.panTo( trackCoordinates[0] );
 	trackPath.setMap(map);
 
-	drawingManager = new google.maps.drawing.DrawingManager({
-
-		drawingMode: null,
-		drawingControl: true,
-		
-		drawingControlOptions: {
-			position: google.maps.ControlPosition.TOP_CENTER,
-			drawingModes: [
-
-				google.maps.drawing.OverlayType.POLYLINE,
-
-			]
-		},
-
-		circleOptions: {
-			fillColor: '#ffff00',
-			fillOpacity: 1,
-			strokeWeight: 5,
-			clickable: false,
-			zIndex: 1,
-			editable: true
-		},
-
-		polylineOptions: {
-			strokeColor: '00FF00',
-			strokeWeight: 2.0,
-			editable: true,
-			clickable: true
-		}
-
-	});
-
-	drawingManager.setMap(map);
-
 	// Listen for click events so we can do cool stuff.
 	google.maps.event.addListener(map, 'click', handleClick);
+
 	startLine.setMap(map);
 
 }
@@ -158,11 +153,6 @@ function handleFiles() {
 
 fileButton = document.getElementById('filebutton');
 fileLoader = document.getElementById('fileloader');
-
-drawModeButton = document.getElementById('drawModeButton');
-
-
-drawModeButton.onclick = toggleDrawStartLine;
 
 fileButton.onclick = (function() {
 	fileLoader.click();

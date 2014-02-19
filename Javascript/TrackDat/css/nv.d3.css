@@ -34,7 +34,7 @@
   border: 1px solid rgba(0,0,0,.2);
   z-index: 10000;
 
-  font-family: Arial;
+  font-family: 'Open Sans', sans-serif;
   font-size: 13px;
   text-align: left;
   pointer-events: none;
@@ -158,11 +158,11 @@ svg {
 
 
 svg text {
-  font: normal 12px Arial;
+  font: normal 12px 'Open Sans',sans-serif;
 }
 
 svg .title {
- font: bold 14px Arial;
+ font: bold 14px 'Open Sans',sans-serif;
 }
 
 .nvd3 .nv-background {
@@ -183,9 +183,38 @@ svg .title {
 *  Brush
 */
 
+/* I HAVE EDITED THESE. ORIGINAL VALUES HAVE BEEN COMMENTED OUT */
+
+/* This is the style of the actual brush itself. */
 .nv-brush .extent {
+  fill: #30C;
   fill-opacity: .125;
   shape-rendering: crispEdges;
+}
+
+/* This appears to handle the little 'handles' on the edges of the brush. */
+
+.nv-brush .resize path {
+  /* fill: #eee;
+  stroke: #666; */
+  display: none;
+}
+
+/* This overrides the original .125 opacity and makes it clear. */
+.nvd3 .nv-brush .extent {
+  /* fill-opacity: 0 !important; */
+  fill-opacity: .250 !important;
+}
+
+/* This handles the background of the non-selected brush area */
+.nvd3 .nv-brushBackground rect {
+  /* stroke: #000;
+  stroke-width: .4;
+  fill: #fff;
+  fill-opacity: .7; */
+  stroke: none;
+  fill: #000;
+  fill-opacity: 0;
 }
 
 
@@ -245,17 +274,6 @@ svg .title {
 .nvd3 .x2 .nv-axis .nv-axisMaxMin text,
 .nvd3 .x3 .nv-axis .nv-axisMaxMin text {
   text-anchor: middle
-}
-
-
-
-/**********
-*  Brush
-*/
-
-.nv-brush .resize path {
-  fill: #eee;
-  stroke: #666;
 }
 
 
@@ -667,21 +685,6 @@ svg .title {
   cursor: move;
 }
 
-.nvd3 .nv-brush .extent {
-  /*
-  cursor: ew-resize !important;
-  */
-  fill-opacity: 0 !important;
-}
-
-.nvd3 .nv-brushBackground rect {
-  stroke: #000;
-  stroke-width: .4;
-  fill: #fff;
-  fill-opacity: .7;
-}
-
-
 
 /**********
 * Indented Tree
@@ -742,11 +745,11 @@ svg .title {
   stroke-opacity: .7;
 }
 
-.nvd3 .brush .extent {
+/*.nvd3 .brush .extent {
   fill-opacity: .3;
   stroke: #fff;
   shape-rendering: crispEdges;
-}
+}*/
 
 .nvd3 .axis line, .axis path {
   fill: none;
