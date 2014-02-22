@@ -21,6 +21,18 @@ body {
 	z-index: 1000;
 }
 
+#track .main.menu .item {
+	padding: 1.1em 2.0em;
+}
+
+#track .ui.fixed.menu + .ui.grid {
+	padding-top: 3.75rem;
+}
+
+#track .main.menu h3 {
+	margin: 0px;
+}
+
 
 .footer {
 	position: fixed;
@@ -29,6 +41,16 @@ body {
 	height: 300px;
 	background: #FFF;
 	border: 1px solid #CCC;
+}
+
+.footer .ui.menu {
+	margin: 0px;
+
+	border-top-left-radius: 	0px;
+	border-bottom-left-radius: 	0px;
+	border-top-right-radius: 	0px;
+	border-bottom-left-radius: 	0px;
+		
 }
 
 .gmap_container {
@@ -83,10 +105,6 @@ body {
 #track .celled {
 	box-shadow: none;
 	-webkit-box-shadow: none;
-}
-
-#track .menu.main h3 {
-	margin: 0px;
 }
 
 .map {

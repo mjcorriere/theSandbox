@@ -130,6 +130,7 @@
 			path.push(event.latLng);
 			if (path.length >= 2) {
 				startLineDrawn = true;
+				drawingStartLine = !drawingStartLine;
 				setLineDrawOff();
 			}
 		}

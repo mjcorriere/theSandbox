@@ -2,6 +2,7 @@
 <html lang='en'>
 	<head>
 		<meta charset='utf-8'>
+
 		<link rel='stylesheet' href='css/semantic.css'>
 		<link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Open+Sans'>
 		
@@ -153,6 +154,23 @@
 		</div>
 
 		<div class='footer'>
+			<div class='ui purple inverted menu'>
+				<div class='ui right purple inverted icon menu'>
+					<div class='title item'>
+						Map Tools
+					</div>
+					<a class='item' id='drawModeButton' 
+						data-content='Set Start/Finish Line' data-variation='inverted' data-position='top left'>
+						<i class="checkered flag icon"></i>
+					</a>
+					<a class="teal item">
+						<i class="lab icon"></i>
+					</a>
+					<a class="green item">
+						<i class="star icon"></i>
+					</a>
+				</div>				
+			</div>
 			<div class='gmap_container'>
 				<div id='gmap_canvas'></div>
 			</div>
@@ -201,7 +219,79 @@
 
 					<h1 class='ui header'>Welcome, racer!</h1>
 
-						<div class='ui celled grid'>
+						<table class="ui basic table" id='laptable'>
+							<thead>
+								<tr>
+									<th>Lap Number</th>
+									<th>Lap Time</th>
+									<th>Max Speed</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>John</td>
+									<td>Approved</td>
+									<td>None</td>
+								</tr>
+								<tr>
+									<td>Jamie</td>
+									<td>Approved</td>
+									<td>Requires call</td>
+								</tr>
+								<tr>
+									<td>Jill</td>
+									<td>Denied</td>
+									<td>None</td>
+								</tr>
+								<tr>
+									<td>John</td>
+									<td>Approved</td>
+									<td>None</td>
+								</tr>
+								<tr>
+									<td>Jamie</td>
+									<td>Approved</td>
+									<td>Requires call</td>
+								</tr>
+								<tr>
+									<td>Jill</td>
+									<td>Denied</td>
+									<td>None</td>
+								</tr>
+								<tr>
+									<td>John</td>
+									<td>Approved</td>
+									<td>None</td>
+								</tr>
+								<tr>
+									<td>Jamie</td>
+									<td>Approved</td>
+									<td>Requires call</td>
+								</tr>
+								<tr>
+									<td>Jill</td>
+									<td>Denied</td>
+									<td>None</td>
+								</tr>
+								<tr>
+									<td>John</td>
+									<td>Approved</td>
+									<td>None</td>
+								</tr>
+								<tr>
+									<td>Jamie</td>
+									<td>Approved</td>
+									<td>Requires call</td>
+								</tr>
+								<tr>
+									<td>Jill</td>
+									<td>Denied</td>
+									<td>None</td>
+								</tr>
+							</tbody>
+						</table>					
+
+<!-- 						<div class='ui celled grid'>
 							<div class='map'>
 								<div class="ui right floated inverted vertical labeled icon menu mapmenu">
 									<a class='item' id='drawModeButton' 
@@ -215,26 +305,10 @@
 										<i class="star icon"></i>
 									</a>
 								</div>							
-								
-								<div class="ui right floated inverted purple vertical menu laplist">
-									<div class="header item">
-										<i class="time icon"></i>
-										Laps
-									</div>
-									<a class="item">
-										Lap 2
-									</a>
-									<a class="item">
-										Lap 8
-									</a>
-									<a class="item">
-										Lap 11
-									</a>
-								</div>
 
 							</div>
 
-						</div>
+						</div> -->
 
 				</div>
 
