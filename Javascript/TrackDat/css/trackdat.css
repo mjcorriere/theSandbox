@@ -4,13 +4,43 @@ body {
 	font-family: 'Open Sans', sans-serif;
 }
 
+body {
+	height: 100%;
+	margin: 0;
+	margin-bottom: 300px;
+}
+
+
+#track .attached.mainmenu.button {
+	position: fixed;
+	top: 100px;
+	right: 0px;
+}
+
+#menu {
+	z-index: 1000;
+}
+
+
+.footer {
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+	height: 300px;
+	background: #FFF;
+	border: 1px solid #CCC;
+}
+
 .gmap_container {
+	display:block;
+	float: right;
 	overflow: hidden;
 	height: 100%;
 }
 
 #gmap_canvas {
 	height: 100%;
+	width: 300px;
 }
 
 .page.grid > .ui.menu {
@@ -55,12 +85,17 @@ body {
 	-webkit-box-shadow: none;
 }
 
+#track .menu.main h3 {
+	margin: 0px;
+}
+
 .map {
 	height: 350px;
 }
 
 .plotcontainer {
-	height: 350px;
+	height: 300px;
+	padding-bottom: 20px;
 }
 
 .positionplot {
@@ -72,7 +107,7 @@ body {
 .ggplot {
 	float: right;
 	height: 100%;
-	width: 35%;
+	width: 300px;
 	display: block;
 }
 

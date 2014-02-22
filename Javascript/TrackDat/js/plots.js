@@ -12,11 +12,11 @@ function plotData() {
 	var sinData = [],
 		cosData = [];
 
-	for (var i = 0; i < 100; i++) {
+	for (var i = 0; i < 5000; i++) {
 		
 		sinData.push({ 
 			x: i, 
-			y: 1.5 * Math.sin(i/5)
+			y: 50 * Math.sin(i/5)
 		});
 		
 		cosData.push({ 
@@ -27,14 +27,9 @@ function plotData() {
 
 	return [
 		{
-			key: 'Mr. Cosine',
-			values: cosData,
-			color: '#564F8A'
-		},
-		{
-			key: 'Mr. Sin',
-			values: sinData,
-			color: '#5AC072'
+			key: 'Speed',
+			values: trackDat.speed,
+			color: '#CC0000'
 		}
 	];
 }
@@ -60,59 +55,68 @@ function scatterData() {
 
 }
 
-nv.addGraph( function() {
-	var chart = nv.models.scatterChart();
+function addCharts() {
 
-	chart.showLegend(false);
-
-	chart.xAxis
-		.tickFormat( d3.format('.2f'));
-
-	chart.yAxis
-		.tickFormat( d3.format('2f'));
-
-	d3.select('#ggplot')
-		.datum(scatterData)
-		.call(chart)
-
-	nv.utils.windowResize( function() {
-		chart.update
-	});
-
-
-});
-
-nv.addGraph( function() {
-	
-	var chart = nv.models.lineWithFocusChart();
-
-	chart.showLegend(false);
-
-	chart.xAxis
-		.axisLabel('Track Position')				
-		.tickFormat(d3.format('.2f'));
-
-	chart.yAxis
-		.axisLabel('The Big Y')
-		.tickFormat(d3.format('.2f'));
-
-	chart.y2Axis
-		.tickFormat(d3.format('.2f'));					
-
-	chart.margin(
-		{left: 100}
-	);
-
-	chart.height2(50);
-
-	d3.select('#linechart')
-		.datum(plotData())
-		.call(chart);
-
-	nv.utils.windowResize( function() { 
-		chart.update() 
-	});
+	nv.addGraph( function() {
 		
+		var chart = nv.models.scatterChart();
+
+		chart.showLegend(false);
+
+		chart.xAxis
+			.tickFormat( d3.format('.2f'));
+
+		chart.yAxis
+			.tickFormat( d3.format('2f'));
+
+		d3.select('#ggplot')
+			.datum(scatterData)
+			.call(chart)
+
+		nv.utils.windowResize( function() {
+			chart.update
+		});
+
 		return chart;
 
-});
+
+	});
+
+	nv.addGraph( function() {
+		
+		var chart = nv.models.lineWithFocusChart();
+
+		chart.showLegend(false);
+
+		chart.xAxis
+			.axisLabel('Track Position')				
+			.tickFormat(d3.format('.2f'));
+
+		chart.yAxis
+			.axisLabel('The Big Y')
+			.tickFormat(d3.format('.2f'));
+
+		// chart.yDomain([0, 200]);
+
+		chart.y2Axis
+			.tickFormat(d3.format('.2f'));			
+
+		chart.margin(
+			{left: 100}
+		);
+
+		chart.height2(50);
+
+		d3.select('#linechart')
+			.datum(plotData)
+			.call(chart);
+
+		nv.utils.windowResize( function() { 
+			chart.update() 
+		});
+			
+		return chart;
+
+	});
+
+}

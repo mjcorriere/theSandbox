@@ -187,8 +187,12 @@ svg .title {
 
 /* This is the style of the actual brush itself. */
 .nv-brush .extent {
-  fill: #30C;
+  fill: #000;
   fill-opacity: .125;
+
+  stroke: #FFF;
+  stroke-width: 1;
+
   shape-rendering: crispEdges;
 }
 
