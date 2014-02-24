@@ -4,14 +4,21 @@
 	var map, drawingManager;
 	var reader = new FileReader();
 
+	var intervalID 		= null
+		, frame 		= 0
+		, trackPath 	= null
+		, vehicleSymbol = null
+		, delay			= 0
+	;
+
 	/* Start line state and styling */
 	var drawingStartLine 	= false,
 		startLineDrawn		= false,
 		startLine 			= new google.maps.Polyline({
-								strokeColor: '#006600',
-								strokeOpacity: 1.0,
-								strokeWeight: 1.5,
-								editable: true
+								strokeColor: 	'#006600',
+								strokeOpacity: 	1.0,
+								strokeWeight: 	1.5,
+								editable: 		true
 							});
 
 	/*****
@@ -19,22 +26,27 @@
 	 *
 	 */
 
-	var drawModeButton = document.getElementById('drawModeButton')
-		, fileButton = document.getElementById('filebutton')
-		, fileLoader = document.getElementById('fileloader');
+	var drawModeButton 	= document.getElementById('drawModeButton')
+		, fileButton 	= document.getElementById('filebutton')
+		, fileLoader 	= document.getElementById('fileloader')
+		, playButton	= document.getElementById('playButton')
+		, stopButton	= document.getElementById('stopButton')
+	;
 
 	/****
 	 * Tie the event handlers to the appropriate functions
 	 *
 	 */
 
-	drawModeButton.onclick = toggleDrawStartLine;
+	drawModeButton.onclick 	= toggleDrawStartLine;
+	playButton.onclick 		= startAnimation;
+	stopButton.onclick		= stopAnimation;
 	
-	fileButton.onclick = (function() {
-		fileLoader.click();
-	});
+	fileButton.onclick 		= (function() {
+									fileLoader.click();
+								});
 
-	fileLoader.onchange = handleFiles;
+	fileLoader.onchange		= handleFiles;
 
 	var sessionData 		= []
 		, trackCoordinates 	= [];
@@ -75,6 +87,31 @@
 				clickable: false
 			}
 		});
+
+	}
+
+	function startAnimation() {
+
+		delay = 30;	//ms
+
+		intervalID = window.setInterval(animate, delay);
+
+	}
+
+	function stopAnimation() {
+
+		window.clearInterval(intervalID);
+
+	}
+
+	function animate() {
+
+		console.log('frame no: ' + frame)
+		frame = (frame + 1) % 5000;
+
+		var icons = trackPath.get('icons');
+		icons[0].offset = (frame / 50) + '%';
+		trackPath.set('icons', icons);
 
 	}
 
@@ -260,6 +297,15 @@
 
 		});
 
+		vehicleSymbol = {
+			path: 			google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+			scale: 			3,
+			strokeWeight: 	1.0,
+			strokeColor: 	'#000000',
+			fillColor: 		'#0022CC',
+			fillOpacity: 	1.0
+		}
+
 		trackPath = new google.maps.Polyline({
 
 			path: 			trackCoordinates,
@@ -267,7 +313,11 @@
 			strokeColor: 	'#CC0000',
 			strokeOpacity: 	.7,
 			strokeWeight: 	1.5,
-			draggable: 		false
+			draggable: 		false,
+			icons: [{
+				icon: vehicleSymbol,
+				offset: '100%'
+			}]
 
 		});
 
@@ -296,4 +346,5 @@
  * Initialize the google map on window load
  *
  */
+
 google.maps.event.addDomListener(window, 'load', function() { trackDat.init_map(); } );
