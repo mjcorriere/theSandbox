@@ -9,29 +9,18 @@
 
 function plotData() {
 
-	var sinData = [],
-		cosData = [];
+	data = [];
 
-	for (var i = 0; i < 5000; i++) {
-		
-		sinData.push({ 
-			x: i, 
-			y: 50 * Math.sin(i/5)
+	trackDat.laps.forEach( function(lap) {
+		data.push({
+			key: 'Lap #' + lap.lapID,
+			values: lap.speed,
+			color: lap.color
 		});
-		
-		cosData.push({ 
-			x: i, 
-			y: .5 * Math.cos(i/15)
-		});
-	}
+	})
 
-	return [
-		{
-			key: 'Speed',
-			values: trackDat.speed,
-			color: '#CC0000'
-		}
-	];
+	return data;
+
 }
 
 function scatterData() {
@@ -49,7 +38,7 @@ function scatterData() {
 	return [
 		{
 			values: theData,
-			color: '#666'
+			color: '#666000'
 		}
 	];
 

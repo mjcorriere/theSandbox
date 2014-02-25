@@ -11,6 +11,13 @@
 		, delay			= 0
 	;
 
+	var laps 			= [];
+
+	var colorArray		= [ '#e74c3c', '#2980b9', '#27ae60', '#e67e22', 
+							'#8e44ad', '#34495e', '#c0392b', '#3498db', 
+							'#2ecc71', '#16a085', '#f1c40f'
+					  		];
+
 	/* Start line state and styling */
 	var drawingStartLine 	= false,
 		startLineDrawn		= false,
@@ -257,6 +264,7 @@
 		// Lets set up the code to be more readable for Future Mark.
 
 		var indices = {
+			'LAPID': 2,
 			'LAT': 	9,
 			'LNG': 	11,
 			'NS': 	10,
@@ -264,13 +272,31 @@
 			'SPEED': 14,
 		}
 
-		var i = 0;
+		function Lap() {
+			
+			//Simple object for containing lap info
+			//Public Variables
+
+			this.latlng = [];
+			this.speed 	= [];
+			this.lapID 	= 0;
+			this.color  = '#000000';
+
+		}
+
+		var i 				= 0
+			colorIndex		= 0
+			, currentLap 	= 0
+		;
+		
+		trackDat.laps		= [];
 
 		sessionData.forEach( function(row) {
 
-			// Unsure what this is for. Copied from Nick.
-			if ( row[2] != 0) {
-				
+			// Ensure we are only using good lap data.
+			// Lap 0 is before start line is crossed.
+			if ( row[indices.LAPID] != 0) {
+
 				lat = row[indices.LAT];
 				lng = row[indices.LNG];
 
@@ -282,6 +308,19 @@
 					lng = -lng;
 				}
 
+				if ( row[indices.LAPID] != currentLap) {
+
+					currentLap = row[indices.LAPID];
+					trackDat.laps[currentLap] = new Lap();
+					i = 0;
+
+				}
+
+				trackDat.laps[currentLap].latlng.push( new google.maps.LatLng(lat, lng) );
+				trackDat.laps[currentLap].speed.push( { x: i, y: +row[indices.SPEED] } );
+				trackDat.laps[currentLap].lapID = currentLap;
+				trackDat.laps[currentLap].color = colorArray[ colorIndex % colorArray.length ].toUpperCase();
+
 				trackCoordinates.push(
 					new google.maps.LatLng(lat, lng)
 				);
@@ -292,6 +331,7 @@
 				});
 
 				i++;
+				colorIndex++;
 
 			}
 
@@ -310,7 +350,7 @@
 
 			path: 			trackCoordinates,
 			geodesic: 		true,
-			strokeColor: 	'#CC0000',
+			strokeColor: 	colorArray[0],
 			strokeOpacity: 	.7,
 			strokeWeight: 	1.5,
 			draggable: 		false,
