@@ -7,6 +7,15 @@
 */
 
 
+var lineChart, ggPlot;
+
+function emptyData() {
+	return [{
+		values: [{}],
+		key: 'No Data'
+	}]
+}
+
 function plotData() {
 
 	data = [];
@@ -44,6 +53,72 @@ function scatterData() {
 
 }
 
+function initCharts() {
+
+	nv.addGraph( function() {
+		
+		ggPlot = nv.models.scatterChart();
+
+		ggPlot.showLegend(false);
+
+		ggPlot.xAxis
+			.tickFormat( d3.format('.2f'));
+
+		ggPlot.yAxis
+			.tickFormat( d3.format('2f'));
+
+		d3.select('#ggplot')
+			.datum(emptyData)
+			.call(ggPlot);
+
+		nv.utils.windowResize( function() {
+			ggPlot.update
+		});
+
+		return ggPlot;
+
+	});
+
+	nv.addGraph( function() {
+		
+		lineChart = nv.models.lineWithFocusChart();
+
+		lineChart.showLegend(false);
+
+		lineChart.xAxis
+			.axisLabel('Track Position')				
+			.tickFormat(d3.format('.2f'));
+
+		lineChart.yAxis
+			.axisLabel('The Big Y')
+			.tickFormat(d3.format('.2f'));
+
+		// lineChart.yDomain([0, 200]);
+
+		lineChart.y2Axis
+			.tickFormat(d3.format('.2f'));			
+
+		lineChart.margin(
+			{left: 100}
+		);
+
+		lineChart.height2(50);
+
+		d3.select('#linechart')
+			.datum(emptyData)
+			.call(lineChart);		
+
+		nv.utils.windowResize( function() { 
+			lineChart.update() 
+		});
+			
+		return lineChart;
+
+	});	
+
+
+}
+
 function addCharts() {
 
 	nv.addGraph( function() {
@@ -67,7 +142,6 @@ function addCharts() {
 		});
 
 		return chart;
-
 
 	});
 
@@ -107,5 +181,17 @@ function addCharts() {
 		return chart;
 
 	});
+
+}
+
+function updateCharts() {
+
+	d3.select('#ggplot')
+		.datum(scatterData)
+		.call(ggPlot);
+
+	d3.select('#linechart')
+		.datum(plotData)
+		.call(lineChart);	
 
 }

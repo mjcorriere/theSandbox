@@ -102,12 +102,15 @@
 		delay = 30;	//ms
 
 		intervalID = window.setInterval(animate, delay);
+		$('#playButton').addClass('active');
+		$('#stopButton').removeClass('active');
 
 	}
 
 	function stopAnimation() {
 
 		window.clearInterval(intervalID);
+		$('#playButton').removeClass('active');
 
 	}
 
@@ -155,13 +158,15 @@
 
 	function setLineDrawOn() {
 		//drawingManager.setMap(map);
-		drawModeButton.style.backgroundColor = '#CC0000';
+		$('#drawModeButton').addClass('active');
+		// drawModeButton.style.backgroundColor = '#CC0000';
 	}
 
 	function setLineDrawOff() {
 		//drawingManager.setMap(null);
 		console.log('draw off');
-		drawModeButton.style.backgroundColor = null;
+		$('#drawModeButton').removeClass('active');
+		// drawModeButton.style.backgroundColor = null;
 	}	
 		
 	function addStartLatLng(event) {
@@ -376,7 +381,8 @@
 
 		startLine.setMap(map);
 
-		addCharts();
+		// addCharts();
+		updateCharts();
 
 	}	
 
@@ -388,3 +394,5 @@
  */
 
 google.maps.event.addDomListener(window, 'load', function() { trackDat.init_map(); } );
+
+initCharts();
