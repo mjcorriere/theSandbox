@@ -97,6 +97,66 @@
 
 	}
 
+	tabulate = function(data, columns) {
+
+	    var table = d3.select("#laptable"),
+	        tbody = table.append("tbody");
+
+	    // append the header row
+	    // thead.append("tr")
+	    //     .selectAll("th")
+	    //     .data(columns)
+	    //     .enter()
+	    //     .append("th")
+	    //         .text(function(column) { return column; });
+
+	    // create a row for each object in the data
+	    var rows = tbody.selectAll("tr")
+	        .data(data)
+	        .enter()
+	        .append("tr");
+
+	    // create a cell in each row for each column
+	    var cells = rows.selectAll("td")
+	        .data(function(row) {
+	            return columns.map(function(column) {
+	                return {column: column, value: row[column]};
+	            });
+	        })
+	        .enter()
+	        .append("td")
+	            .text(function(d) { return d.value; });
+	    
+	    return table;
+	
+	}
+
+	generateLapTable = function() {
+
+		var tableData = [];
+
+		trackDat.laps.forEach( function(lap) {
+
+			var speeds = [];
+			
+			lap.speed.forEach( function(dataPoint) {
+				speeds.push(Math.round(dataPoint.y));
+			});
+
+			tableData.push({
+				lapNo: lap.lapID,
+				laptime: lap.laptime,
+				topspeed: Math.max.apply(null, speeds)
+			});
+
+		});
+
+		console.log(tableData);
+
+		tabulate(tableData, ['lapNo', 'laptime', 'topspeed']);
+
+	}
+
 	function startAnimation() {
 
 		delay = 30;	//ms
@@ -186,6 +246,39 @@
 
 	}
 
+	function calc_lap_time(startTime, endTime) {
+
+		console.log('start: ' + startTime);
+		console.log('end: ' + endTime);		
+
+		var start = startTime.split(':');
+		var end = endTime.split(':');
+
+		console.log(start);
+		console.log(end);		
+
+		var st 	= new Date();
+		var et 	= new Date();
+
+		st.setHours(+start[0]);
+		et.setHours(+end[0]);		
+		st.setMinutes(+start[1]);
+		et.setMinutes(+end[1]);
+		st.setSeconds(+start[2]);
+		et.setSeconds(+end[2]);
+
+		console.log(st);
+		console.log(et);
+
+		var s = (et - st) / 1000;
+		console.log('s: ' + s)
+
+		var min = Math.floor(s / 60.0);
+		var sec = s - 60 * min;
+
+		return min+':'+sec;
+	}
+
 	function CSVToArray( strData, strDelimiter ) {
 
 		strDelimiter = (strDelimiter || ",");    
@@ -269,12 +362,15 @@
 		// Lets set up the code to be more readable for Future Mark.
 
 		var indices = {
-			'LAPID': 2,
-			'LAT': 	9,
-			'LNG': 	11,
-			'NS': 	10,
-			'EW': 	12,
-			'SPEED': 14,
+			'LAPID': 	2,
+			'UTCTIME': 	5,
+			'LAT': 		9,
+			'LNG': 		11,
+			'NS': 		10,
+			'EW': 		12,
+			'SPEED': 	14,
+			'GX': 	 	16,
+			'GY': 		17
 		}
 
 		function Lap() {
@@ -284,14 +380,17 @@
 
 			this.latlng = [];
 			this.speed 	= [];
+			this.gg 	= [];
 			this.lapID 	= 0;
 			this.color  = '#000000';
+			this.laptime = 0;
 
 		}
 
 		var i 				= 0
 			colorIndex		= 0
 			, currentLap 	= 0
+			, time 			= []
 		;
 		
 		trackDat.laps		= [];
@@ -301,6 +400,8 @@
 			// Ensure we are only using good lap data.
 			// Lap 0 is before start line is crossed.
 			if ( row[indices.LAPID] != 0) {
+
+				time.push( row[indices.UTCTIME] );
 
 				lat = row[indices.LAT];
 				lng = row[indices.LNG];
@@ -315,14 +416,24 @@
 
 				if ( row[indices.LAPID] != currentLap) {
 
+					if (currentLap != 0) {
+						console.log(time[0]);
+						console.log(time[time.length - 2]);
+						trackDat.laps[currentLap].laptime = calc_lap_time(time[0], time[time.length - 2]);
+						time = [];
+					}
+
 					currentLap = row[indices.LAPID];
 					trackDat.laps[currentLap] = new Lap();
+					
 					i = 0;
 
 				}
 
 				trackDat.laps[currentLap].latlng.push( new google.maps.LatLng(lat, lng) );
 				trackDat.laps[currentLap].speed.push( { x: i, y: +row[indices.SPEED] } );
+				trackDat.laps[currentLap].gg.push( { x: row[indices.GX], y: row[indices.GY] })
+				
 				trackDat.laps[currentLap].lapID = currentLap;
 				trackDat.laps[currentLap].color = colorArray[ colorIndex % colorArray.length ].toUpperCase();
 
@@ -343,7 +454,7 @@
 		});
 
 		vehicleSymbol = {
-			path: 			google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+			path: 			google.maps.SymbolPath.CIRCLE,
 			scale: 			3,
 			strokeWeight: 	1.0,
 			strokeColor: 	'#000000',
@@ -381,7 +492,9 @@
 
 		startLine.setMap(map);
 
-		// addCharts();
+		
+		generateLapTable();
+
 		updateCharts();
 
 	}	

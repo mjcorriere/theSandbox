@@ -33,23 +33,20 @@ function plotData() {
 }
 
 function scatterData() {
-	var theData = [];
 
-	for (var i=0; i < 100; i++) {
+	data = []
 
-		theData.push({
-			x: (Math.random() * 10) - 5,
-			y: (Math.random() * 10) - 5,
+	trackDat.laps.forEach( function(lap) {
+
+		data.push({
+			key: 'Lap #' + lap.lapID,
+			values: lap.gg,
+			color: '#CC0000'
 		});
 
-	}
+	})
 
-	return [
-		{
-			values: theData,
-			color: '#666000'
-		}
-	];
+	return data;
 
 }
 
@@ -61,11 +58,21 @@ function initCharts() {
 
 		ggPlot.showLegend(false);
 
+		ggPlot.xDomain([-2, 2]);
+		ggPlot.yDomain([-2, 2]);
+
 		ggPlot.xAxis
-			.tickFormat( d3.format('.2f'));
+			.axisLabel('Lateral G')
+			.tickFormat( d3.format('.01f'));
 
 		ggPlot.yAxis
-			.tickFormat( d3.format('2f'));
+			.axisLabel('Longitudinal G')
+			.axisLabelDistance(30)
+			.tickFormat( d3.format('.01f'));
+
+		ggPlot.margin(
+			{left: 75}
+		);
 
 		d3.select('#ggplot')
 			.datum(emptyData)
@@ -87,19 +94,20 @@ function initCharts() {
 
 		lineChart.xAxis
 			.axisLabel('Track Position')				
-			.tickFormat(d3.format('.2f'));
+			.tickFormat(d3.format('d'));
 
 		lineChart.yAxis
-			.axisLabel('The Big Y')
-			.tickFormat(d3.format('.2f'));
+			.axisLabel('Velocity (km/h)')
+			.axisLabelDistance(40)
+			.tickFormat(d3.format('d'));
 
 		// lineChart.yDomain([0, 200]);
 
 		lineChart.y2Axis
-			.tickFormat(d3.format('.2f'));			
+			.tickFormat(d3.format('d'));			
 
 		lineChart.margin(
-			{left: 100}
+			{left: 50}
 		);
 
 		lineChart.height2(50);
@@ -116,71 +124,6 @@ function initCharts() {
 
 	});	
 
-
-}
-
-function addCharts() {
-
-	nv.addGraph( function() {
-		
-		var chart = nv.models.scatterChart();
-
-		chart.showLegend(false);
-
-		chart.xAxis
-			.tickFormat( d3.format('.2f'));
-
-		chart.yAxis
-			.tickFormat( d3.format('2f'));
-
-		d3.select('#ggplot')
-			.datum(scatterData)
-			.call(chart)
-
-		nv.utils.windowResize( function() {
-			chart.update
-		});
-
-		return chart;
-
-	});
-
-	nv.addGraph( function() {
-		
-		var chart = nv.models.lineWithFocusChart();
-
-		chart.showLegend(false);
-
-		chart.xAxis
-			.axisLabel('Track Position')				
-			.tickFormat(d3.format('.2f'));
-
-		chart.yAxis
-			.axisLabel('The Big Y')
-			.tickFormat(d3.format('.2f'));
-
-		// chart.yDomain([0, 200]);
-
-		chart.y2Axis
-			.tickFormat(d3.format('.2f'));			
-
-		chart.margin(
-			{left: 100}
-		);
-
-		chart.height2(50);
-
-		d3.select('#linechart')
-			.datum(plotData)
-			.call(chart);
-
-		nv.utils.windowResize( function() { 
-			chart.update() 
-		});
-			
-		return chart;
-
-	});
 
 }
 
