@@ -7,6 +7,7 @@
 	var intervalID 		= null
 		, frame 		= 0
 		, trackPath 	= null
+		, trackPaths	= []
 		, vehicleSymbol = null
 		, delay			= 0
 	;
@@ -38,6 +39,8 @@
 		, fileLoader 	= document.getElementById('fileloader')
 		, playButton	= document.getElementById('playButton')
 		, stopButton	= document.getElementById('stopButton')
+		, firstTimeMsg	= document.getElementById('firstTimeMsg')
+		, noDataMsg		= document.getElementById('nodatamsg')
 	;
 
 	/****
@@ -102,14 +105,6 @@
 	    var table = d3.select("#laptable"),
 	        tbody = table.append("tbody");
 
-	    // append the header row
-	    // thead.append("tr")
-	    //     .selectAll("th")
-	    //     .data(columns)
-	    //     .enter()
-	    //     .append("th")
-	    //         .text(function(column) { return column; });
-
 	    // create a row for each object in the data
 	    var rows = tbody.selectAll("tr")
 	        .data(data)
@@ -126,6 +121,11 @@
 	        .enter()
 	        .append("td")
 	            .text(function(d) { return d.value; });
+
+		// add the lap control buttons
+		// redo this in a non-hack manner        
+        rows.append('td')
+        		.html( function (d) { return '<div class="ui small basic icon buttons"><div class="ui button"><i class="pause icon"></i></div><div class="ui button"><i class="play icon"></i></div><div class="ui button"><i class="shuffle icon"></i></div></div>' });
 	    
 	    return table;
 	
@@ -347,6 +347,10 @@
 
 	function uploadComplete() {
 
+		//Hide the welcome message
+		firstTimeMsg.style.display 	= 'none';
+		noDataMsg.style.display		= 'none';
+
 		// File has been uploaded. Let's parse it immediately.
 		sessionData = CSVToArray(reader.result, '\t');
 
@@ -461,6 +465,8 @@
 			fillColor: 		'#0022CC',
 			fillOpacity: 	1.0
 		}
+
+		
 
 		trackPath = new google.maps.Polyline({
 

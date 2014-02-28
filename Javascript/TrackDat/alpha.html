@@ -155,6 +155,9 @@
 
 		<div class='footer'>
 			<div class='ui menu'>
+				<a class='item'>
+					<i class='double angle down icon'></i>
+				</a>
 				<div class='title item'>
 					Plot Tools
 				</div>
@@ -183,6 +186,9 @@
 				</div>
 
 				<div class='positionplot'>
+					<div class='nodata' id='nodatamsg'>
+						no data
+					</div>
 					<svg id='linechart' />
 				</div>
 			</div>
@@ -212,13 +218,23 @@
 			<div class='ui grid'>				
 			
 				<div class='eight wide column'>
-			
-					<div id='filebutton' class='ui right floated green labeled icon button'>
-						<i class='add sign icon'></i>
-						Upload Track Data
-					</div>
+						<div id='filebutton' class='ui green right floated labeled icon button'>
+							<i class='add sign icon'></i>
+							Upload Track Data
+						</div>		
 
-					<h1 class='ui header'>Welcome, racer!</h1>
+			
+					<h1 class='ui header'><i class='small circular user icon'></i>Welcome, racer!</h1>
+
+						<div class="ui yellow icon message" id='firstTimeMsg'>
+						  <i class="comment icon"></i>
+						  <div class="content">
+						    <div class="header">
+						      Looks like this is your first time here.
+						    </div>
+						    <p>Click the Upload Track Data button to get started!</p>
+						  </div>
+						</div>
 
 						<table class="ui basic table" id='laptable'>
 							<thead>
@@ -229,7 +245,12 @@
 								</tr>
 							</thead>
 
-						</table>					
+						</table>
+
+
+
+				</div>
+				<div class='eight wide column'>
 
 				</div>
 

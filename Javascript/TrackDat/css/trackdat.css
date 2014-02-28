@@ -10,6 +10,13 @@ body {
 	margin-bottom: 300px;
 }
 
+#track tbody tr:hover {
+	background-color: #EFF7FF !important;
+}
+
+#track tbody td:hover {
+	background-color: #EFF7FF;
+}
 
 #track .attached.mainmenu.button {
 	position: fixed;
@@ -127,6 +134,23 @@ body {
 	height: 100%;
 	width: 300px;
 	display: block;
+}
+
+.nodata {
+	position: absolute;
+	line-height: 300px;
+	margin-left: 200px;
+	width: inherit;
+	z-index: 999;
+	text-align: center;
+	vertical-align: middle;
+	font-size: 10rem;
+	color: rgba(120, 120, 120, 0.5);
+}
+
+.secondaryPlotArea {
+	position: absolute;
+	bottom: 0px;
 }
 
 input[type='file'] {
