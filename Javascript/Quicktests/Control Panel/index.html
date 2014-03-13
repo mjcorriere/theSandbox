@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<meta charset='utf-8'>
+		<title>Loan Calculator</title>
+
+		<!-- CSS Includes -->
+		<link rel='stylesheet' type='text/css' href='css/semantic.css'>
+		<link rel='stylesheet' type='text/css' href='css/fincalc.css'>
+		<link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Open+Sans'>
+
+	</head>
+	
+	<body id='fincalc'>
+
+		<div class='ui three column page grid'>
+			<div class='column'>
+				<div class='ui raised segment'>
+					<div class='ui one column vertically divided grid'>
+						<div class='row'><div class='column'>
+							<h2 class='ui header'>Controls</h2>
+							<div class='ui form'>
+								<div class='field'>
+									<label>Principal</label>
+									<div class='ui massive left icon input'>
+										<input type='text' placeholder='1000' id='principal'>
+										<i class='dollar icon'></i>
+									</div>
+								</div>
+								<div class='field'>
+									<label>Term</label>
+									<div class='ui massive left icon input'>
+										<input type='text' placeholder='36' id='term'>
+										<i class='calendar icon'></i>
+									</div>
+								</div>
+								<div class='field'>
+									<label>APR</label>
+									<div class='ui massive left icon input'>
+										<input type='text' placeholder='6.0' id='APR'>
+										<i class='briefcase icon'></i>
+									</div>
+								</div>						
+							</div>
+							<h3 class='ui header'>Knobbers</h3>
+						</div></div>
+						<div class='row'><div class='column'>
+							<div class='ui three column grid'>
+								<div class='row'>
+									<div class='column'>
+										<input type='text' id='principalKnob' value='1000'>
+									</div>
+									<div class='column'>
+										<input type='text' id='termKnob' value='60'>
+									</div>
+									<div class='column'>
+										<input type='text' id='aprKnob' value='5.2'>
+									</div>
+								</div>
+								<div class='row labels'>
+									<div class='column'>
+										<div class='knobLabel'>Principal</div>
+									</div>
+									<div class='column'>
+										<div class='knobLabel'>Term</div>
+									</div>
+									<div class='column'>
+										<div class='knobLabel'>APR</div>
+									</div>
+								</div>						
+							</div>
+						</div></div>
+					</div>
+
+				</div>
+			</div>
+			<div class='column'>
+				<h1 class='ui header' id='payment' style='font-size: 120px'>$0.00</h1>
+			</div>
+		</div>
+
+		<!-- JS Includes -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script type='text/javascript' src='js/jquery.knob.js'></script>
+		<script type='text/javascript' src='js/semantic.min.js'></script>
+
+		<script type="text/javascript">
+
+		var A = 0;
+			
+			function calc_payment() {
+				var P 	= parseFloat( $('#principal').val() ),
+					n 	= parseFloat( $('#term').val() ),
+					r 	= parseFloat( $('#APR').val() ) / 100 / 12;
+
+				A = r * P * Math.pow((1 + r), n) / ( Math.pow((1 + r), n) - 1);
+
+				console.log(A);
+
+				$('#payment').text('$' + A.toFixed(2) + '/mo');
+			}
+
+			$('#principalKnob').knob({
+				'min': 0
+				, 'max': 20000
+				, 'angleOffset': -125
+				, 'angleArc': 250
+				, 'step': 50
+				, 'width': '100%'
+				, 'displayInput': false
+				, 'change': function (v) { $('#principal').val(v); calc_payment(); }
+			});
+
+			$('#termKnob').knob({
+				'min': 0
+				, 'max': 200
+				, 'angleOffset': -125
+				, 'angleArc': 250
+				, 'step': 1
+				, 'width': '100%'
+				, 'displayInput': false
+				, 'change': function(v) { $('#term').val(v); calc_payment(); }
+			});
+
+			$('#aprKnob').knob({
+				'min': 0
+				, 'max': 150
+				, 'angleOffset': -125
+				, 'angleArc': 250				
+				, 'step': 1
+				, 'width': '100%'
+				, 'displayInput': false
+				, 'change': function(v) { $('#APR').val(v/10); calc_payment(); }
+			});
+
+			$('#principal')
+				.on('keyup', function() { 
+								$('#principalKnob')
+									.val( $(this).val() )
+									.trigger('change')
+								});
+
+			$('#term')
+				.on('keyup', function() { 
+								$('#termKnob')
+									.val( $(this).val() )
+									.trigger('change')
+								});
+
+			$('#APR')
+				.on('keyup', function() { 
+								$('#aprKnob')
+									.val( $(this).val() * 10 )
+									.trigger('change')
+								});
+
+
+		</script>
+	</body>
+</html>

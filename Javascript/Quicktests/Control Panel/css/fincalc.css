@@ -1,0 +1,17 @@
+html,
+body,
+input {
+	font-family: 'Open Sans', sans-serif;
+}
+
+#fincalc .ui.input input {
+	font-family: 'Open Sans', sans-serif;
+}
+
+.knobLabel {
+	text-align: center;
+}
+
+#fincalc .row.labels {
+	padding-top: 0;
+}
