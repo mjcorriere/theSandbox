@@ -1,5 +1,8 @@
-// Track dat
-(function(trackDat) {
+// TrackX
+// Version: early alpha
+// @author: mjc
+
+(function(TrackX) {
 
 	var map, drawingManager;
 	var reader = new FileReader();
@@ -14,12 +17,15 @@
 
 	var laps 			= [];
 
+	// Colors to be used by the position plot. Taken from flatui colors .com
+	// Future: larger array for more lines.
+
 	var colorArray		= [ '#e74c3c', '#2980b9', '#27ae60', '#e67e22', 
 							'#8e44ad', '#34495e', '#c0392b', '#3498db', 
 							'#2ecc71', '#16a085', '#f1c40f'
 					  		];
 
-	/* Start line state and styling */
+	// Start-line state and styling
 	var drawingStartLine 	= false,
 		startLineDrawn		= false,
 		startLine 			= new google.maps.Polyline({
@@ -29,10 +35,9 @@
 								editable: 		true
 							});
 
-	/*****
-	 * Get handles for all the UI elements / buttons
-	 *
-	 */
+
+	// Get handles for all the UI elements / buttons
+	// Future: handle with JQuery.
 
 	var drawModeButton 	= document.getElementById('drawModeButton')
 		, fileButton 	= document.getElementById('filebutton')
@@ -45,6 +50,10 @@
 
 	/****
 	 * Tie the event handlers to the appropriate functions
+	 * Future: 	These DOM element connections should be made
+	 *			through external API calls.
+	 *				i.e. TrackX.connect('drawMode', '#drawModeButton')
+	 *			Use JQuery.
 	 *
 	 */
 
@@ -61,22 +70,27 @@
 	var sessionData 		= []
 		, trackCoordinates 	= [];
 	
-	// Needs to be public temporariliy for access from plots.js
-	trackDat.speed 			= [];	
+	/****
+	 * Needs to be public temporariliy for access from plots.js
+	 * Future: Clean this up with a public accessor method.
+	 *			TrackX.plotSpeed() ?
+	 */
+	TrackX.speed 			= [];	
 
 	/********
 	 * Google map initialiation.
 	 *
-	 *@param: _mapOptions
+	 * @param: _mapOptions
+	 *
 	 */
 
-	 trackDat.init_map = function(_mapOptions) {
+	 TrackX.init_map = function(_mapOptions) {
 	 	
 	 	// Set the map style and initial values
 	 	var mapOptions = _mapOptions || {
-		 		zoom: 		14
-		 		, center: 	new google.maps.LatLng(40.8054567,-73.9654747)
-		 		, mapTypeId: 	google.maps.MapTypeId.ROADMAP
+		 		zoom: 				14
+		 		, center: 			new google.maps.LatLng(40.8054567,-73.9654747)
+		 		, mapTypeId: 		google.maps.MapTypeId.ROADMAP
 		 		, disableDefaultUI: true
 	 	};
 
@@ -84,7 +98,7 @@
 		map = new google.maps.Map( document.getElementById("gmap_canvas"), mapOptions );
 
 		// Setup the drawingManager object
-
+		// Polyline initialized for start line color (green)
 		drawingManager = new google.maps.drawing.DrawingManager({
 			
 			drawingMode: google.maps.drawing.OverlayType.POLYLINE,
@@ -96,9 +110,20 @@
 				editable: true,
 				clickable: false
 			}
+
 		});
 
 	}
+
+	/***
+	 * Create the lap table from the calculated lap times.
+	 *
+	 * @param: {array} data 		An array of 'row' objects 
+	 * @param: {array} columns		An array of strings, column headers for the table
+	 *
+	 * @return: {element} table 	
+	 *
+	 */
 
 	tabulate = function(data, columns) {
 
@@ -122,27 +147,37 @@
 	        .append("td")
 	            .text(function(d) { return d.value; });
 
-		// add the lap control buttons
-		// redo this in a non-hack manner        
+		// Add the lap control buttons. Currently hacky.
+		// Future: redo this in a more data-driven way.
         rows.append('td')
-        		.html( function (d) { return '<div class="ui small basic icon buttons"><div class="ui button"><i class="pause icon"></i></div><div class="ui button"><i class="play icon"></i></div><div class="ui button"><i class="shuffle icon"></i></div></div>' });
+        		.html( function (d) { 
+        			return '<div class="ui small basic icon buttons"><div class="ui button"><i class="pause icon"></i></div><div class="ui button"><i class="play icon"></i></div><div class="ui button"><i class="shuffle icon"></i></div></div>' 
+        		});
 	    
 	    return table;
 	
 	}
 
-	generateLapTable = function() {
+	/******
+	 * Create an array of lap data in preparation for turning it into a table element
+	 *
+	 * @param: none
+	 */
+
+	function generateLapTable() {
 
 		var tableData = [];
 
-		trackDat.laps.forEach( function(lap) {
+		TrackX.laps.forEach( function(lap) {
 
 			var speeds = [];
 			
+			// Pull out all the speeds and place them in an array
 			lap.speed.forEach( function(dataPoint) {
 				speeds.push(Math.round(dataPoint.y));
 			});
 
+			// Create a table-ready array full of 'row' objects
 			tableData.push({
 				lapNo: lap.lapID,
 				laptime: lap.laptime,
@@ -151,11 +186,22 @@
 
 		});
 
-		console.log(tableData);
-
+		// Create the DOM element with these headers
+		// Future: Headers are hard-coded into HTML. 
+		//			Make the headers driven from this function.
 		tabulate(tableData, ['lapNo', 'laptime', 'topspeed']);
 
 	}
+
+	/****
+	 * Start the animation of the automobile driving around the track on the map
+	 *
+	 *	@param: none
+	 *
+	 *	Future: Have the frame rate dependent on the amount of data points.
+	 *	Future: Make the playback a fraction of the actual driving speed.
+	 *
+	 */
 
 	function startAnimation() {
 
@@ -176,10 +222,10 @@
 
 	function animate() {
 
-		console.log('frame no: ' + frame)
 		frame = (frame + 1) % 5000;
 
 		var icons = trackPath.get('icons');
+
 		icons[0].offset = (frame / 50) + '%';
 		trackPath.set('icons', icons);
 
@@ -194,9 +240,14 @@
 
 	}
 
-	function handleClick(event) {
+	/***
+	 * Event handler for map clicks. Checks for status of line drawing tool. Gateway for addStartLatLng()
+	 *
+	 * @param: {event} event The google maps event object.
+	 *
+	 */
 
-		console.log('handling click');
+	function handleMapClick(event) {
 
 		if ( (startLineDrawn == false) && drawingStartLine ) {
 			addStartLatLng(event);
@@ -217,16 +268,15 @@
 	}
 
 	function setLineDrawOn() {
-		//drawingManager.setMap(map);
+
 		$('#drawModeButton').addClass('active');
-		// drawModeButton.style.backgroundColor = '#CC0000';
+
 	}
 
 	function setLineDrawOff() {
-		//drawingManager.setMap(null);
-		console.log('draw off');
+
 		$('#drawModeButton').removeClass('active');
-		// drawModeButton.style.backgroundColor = null;
+
 	}	
 		
 	function addStartLatLng(event) {
@@ -377,6 +427,8 @@
 			'GY': 		17
 		}
 
+		
+
 		function Lap() {
 			
 			//Simple object for containing lap info
@@ -397,7 +449,7 @@
 			, time 			= []
 		;
 		
-		trackDat.laps		= [];
+		TrackX.laps		= [];
 
 		sessionData.forEach( function(row) {
 
@@ -423,29 +475,37 @@
 					if (currentLap != 0) {
 						console.log(time[0]);
 						console.log(time[time.length - 2]);
-						trackDat.laps[currentLap].laptime = calc_lap_time(time[0], time[time.length - 2]);
+						TrackX.laps[currentLap].laptime = calc_lap_time(time[0], time[time.length - 2]);
 						time = [];
 					}
 
 					currentLap = row[indices.LAPID];
-					trackDat.laps[currentLap] = new Lap();
+					TrackX.laps[currentLap] = new Lap();
 					
 					i = 0;
 
 				}
 
-				trackDat.laps[currentLap].latlng.push( new google.maps.LatLng(lat, lng) );
-				trackDat.laps[currentLap].speed.push( { x: i, y: +row[indices.SPEED] } );
-				trackDat.laps[currentLap].gg.push( { x: row[indices.GX], y: row[indices.GY] })
+				// Fill out the current lap object with the parsed data.
+
+				TrackX.laps[currentLap].latlng.push( new google.maps.LatLng(lat, lng) );
+				TrackX.laps[currentLap].speed.push( { x: i, y: +row[indices.SPEED] } );
+				TrackX.laps[currentLap].gg.push( { x: row[indices.GX], y: row[indices.GY] })
 				
-				trackDat.laps[currentLap].lapID = currentLap;
-				trackDat.laps[currentLap].color = colorArray[ colorIndex % colorArray.length ].toUpperCase();
+				TrackX.laps[currentLap].lapID = currentLap;
+				TrackX.laps[currentLap].color = colorArray[ colorIndex % colorArray.length ].toUpperCase();
+
+				// Push the lat/lng information to the map.
+				// Future: divide polyline into individual color-coded lap polylines
 
 				trackCoordinates.push(
 					new google.maps.LatLng(lat, lng)
 				);
 
-				trackDat.speed.push({
+				// Used by plots.js.
+				// Future: turn this into an accessor method
+
+				TrackX.speed.push({
 					x: i,
 					y: +row[indices.SPEED] 
 				});
@@ -457,6 +517,8 @@
 
 		});
 
+		// Initialize the visuals of the vehicle symbol and the path
+
 		vehicleSymbol = {
 			path: 			google.maps.SymbolPath.CIRCLE,
 			scale: 			3,
@@ -464,9 +526,7 @@
 			strokeColor: 	'#000000',
 			fillColor: 		'#0022CC',
 			fillOpacity: 	1.0
-		}
-
-		
+		}		
 
 		trackPath = new google.maps.Polyline({
 
@@ -494,10 +554,9 @@
 		trackPath.setMap( map );
 
 		// Listen for click events so we can do cool stuff.
-		google.maps.event.addListener(map, 'click', handleClick);
+		google.maps.event.addListener(map, 'click', handleMapClick);
 
 		startLine.setMap(map);
-
 		
 		generateLapTable();
 
@@ -505,13 +564,13 @@
 
 	}	
 
-})(window.trackDat = window.trackDat || {})
+})(window.TrackX = window.TrackX || {})
 
 /******
  * Initialize the google map on window load
  *
  */
 
-google.maps.event.addDomListener(window, 'load', function() { trackDat.init_map(); } );
+google.maps.event.addDomListener(window, 'load', function() { TrackX.init_map(); } );
 
 initCharts();

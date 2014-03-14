@@ -7,14 +7,15 @@
 		<!-- CSS Includes -->
 		<link rel='stylesheet' type='text/css' href='css/semantic.css'>
 		<link rel='stylesheet' type='text/css' href='css/fincalc.css'>
+		<link rel='stylesheet' type='text/css' href='css/nv.d3.css'>		
 		<link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Open+Sans'>
 
 	</head>
 	
 	<body id='fincalc'>
 
-		<div class='ui three column page grid'>
-			<div class='column'>
+		<div class='ui page grid'>
+			<div class='five wide column'>
 				<div class='ui raised segment'>
 					<div class='ui one column vertically divided grid'>
 						<div class='row'><div class='column'>
@@ -74,30 +75,193 @@
 
 				</div>
 			</div>
-			<div class='column'>
+			<div class='ten wide column'>
 				<h1 class='ui header' id='payment' style='font-size: 120px'>$0.00</h1>
+				<svg id='chart' />
 			</div>
 		</div>
 
 		<!-- JS Includes -->
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+		<script src='js/d3.v3.js' type='text/javascript'></script>
+		<script src='js/nv.d3.js' type='text/javascript'></script>
 		<script type='text/javascript' src='js/jquery.knob.js'></script>
 		<script type='text/javascript' src='js/semantic.min.js'></script>
 
 		<script type="text/javascript">
 
-		var A = 0;
-			
-			function calc_payment() {
-				var P 	= parseFloat( $('#principal').val() ),
-					n 	= parseFloat( $('#term').val() ),
-					r 	= parseFloat( $('#APR').val() ) / 100 / 12;
+			function Loan(principal, term, APR, loanID) {
+				
+				this.calcPayment = function() {
 
-				A = r * P * Math.pow((1 + r), n) / ( Math.pow((1 + r), n) - 1);
+					var 	p = this.principal
+						, 	t = this.term
+						, 	i = this.monthlyAPR;
 
-				console.log(A);
+					this.payment = i * p * Math.pow((1 + i), t) / (Math.pow((1 + i), t) - 1 );
+					$('#payment').text('$' + this.payment.toFixed(2) + '/mo');
 
-				$('#payment').text('$' + A.toFixed(2) + '/mo');
+				}
+
+				this.calcSchedule = function(addlPayment) {
+					
+					var newBalance, pmtInterest, pmtPrincipal, totalInterest, last, i = 0;
+					var balPlot = []
+						, pmtPPlot = []
+						, pmtIPlot = [];
+
+					this.schedule = [{balance: this.principal, pmtP: 0, pmtI: 0}];
+
+					while (true) {
+
+						last = this.schedule.length - 1;
+
+						newBalance = this.schedule[last].balance 
+										- this.schedule[last].pmtP
+										- addlPayment;
+
+						if (newBalance < 0) { break; }
+
+						pmtInterest		= newBalance * this.monthlyAPR;
+						pmtPrincipal	= this.payment - pmtInterest;
+
+						this.schedule.push({
+							balance: newBalance, 
+							pmtP: pmtPrincipal, 
+							pmtI: pmtInterest
+						});
+
+						balPlot.push({x: i, y: newBalance});
+						pmtPPlot.push({x: i, y: pmtPrincipal});
+						pmtIPlot.push({x: i, y: pmtInterest});
+
+						i++;
+
+					}
+
+					this.data = [
+						{
+							key: 'Balance' + loanID,
+							values: balPlot,
+							type: 'line',
+							yAxis: 1
+						},
+						{
+							key: 'Principal Payment' + loanID,
+							values: pmtPPlot,
+							type: 'line',
+							yAxis: 2
+						},
+						{
+							key: 'Interest Payment' + loanID,
+							values: pmtIPlot,
+							type: 'line',
+							yAxis: 2
+						}
+
+					];
+
+				}
+
+				this.updatePrincipal = function(p) {
+					
+					this.principal = p;
+					this.update();
+
+				}
+
+				this.updateTerm	= function(t) {
+					
+					this.term = t;
+					this.update();
+
+				}
+
+				this.updateAPR	= function(a) {
+					
+					this.APR = a;
+					this.monthlyAPR = a / 12.0 / 100.0;
+					this.update();
+
+				}
+
+				this.update = function() {
+					this.calcPayment();
+					this.calcSchedule(0);
+				}
+
+				this.plotData = function() {
+					return this.data;
+				}
+
+
+				this.principal 	= principal;
+				this.term 		= term;
+				this.APR		= APR;
+				this.loanID		= loanID;
+
+				this.monthlyAPR = APR / 12.0 / 100.0;
+
+				this.payment	= null;
+				this.schedule   = [];
+
+				this.data = [];
+				
+				this.calcPayment();
+				this.calcSchedule(0);
+
+			}
+
+			var loan = new Loan(18000, 150, 6.2, 'A');
+			var baseLoan = new Loan(18000, 150, 6.2, 'B');
+
+			function plotData() {
+
+				return baseLoan.data.concat(loan.data);
+
+			}
+
+			var chart;
+
+			nv.addGraph(function() {
+
+				chart = nv.models.multiChart()
+					.margin({top: 30, right: 75, bottom: 50, left: 70});
+
+				chart.xAxis
+					.axisLabel('Time (months)')
+					.tickFormat(d3.format(',f'));
+
+				chart.yAxis1
+					.axisLabel('Balance ($)')
+					.axisLabelDistance(25)
+					.tickFormat(d3.format(',f'));
+
+				chart.yAxis2
+					.axisLabel('Payment Breakdown ($)')
+					.tickFormat(d3.format(',f'));
+
+
+				d3.select('#chart')
+					.datum(plotData())
+					.transition().duration(500)
+					.call(chart);
+
+				nv.utils.windowResize( function() { 
+					chart.update() 
+				});      
+
+				return chart;
+
+			});
+
+			function redraw() {
+
+				d3.select('#chart')
+					.datum(plotData())
+					.transition().duration(500)
+					.call(chart);
+
 			}
 
 			$('#principalKnob').knob({
@@ -108,7 +272,13 @@
 				, 'step': 50
 				, 'width': '100%'
 				, 'displayInput': false
-				, 'change': function (v) { $('#principal').val(v); calc_payment(); }
+				, 'change': function (v) { 
+					$('#principal').val(v); 
+					loan.updatePrincipal(v); 
+				}
+				, 'release': function() {
+					redraw();
+				}				
 			});
 
 			$('#termKnob').knob({
@@ -119,7 +289,13 @@
 				, 'step': 1
 				, 'width': '100%'
 				, 'displayInput': false
-				, 'change': function(v) { $('#term').val(v); calc_payment(); }
+				, 'change': function(v) { 
+					$('#term').val(v); 
+					loan.updateTerm(v); 
+				}
+				, 'release': function() {
+					redraw();
+				}				
 			});
 
 			$('#aprKnob').knob({
@@ -130,7 +306,13 @@
 				, 'step': 1
 				, 'width': '100%'
 				, 'displayInput': false
-				, 'change': function(v) { $('#APR').val(v/10); calc_payment(); }
+				, 'change': function(v) { 
+					$('#APR').val(v/10); 
+					loan.updateAPR(v/10); 
+				}
+				, 'release': function() {
+					redraw();
+				}
 			});
 
 			$('#principal')

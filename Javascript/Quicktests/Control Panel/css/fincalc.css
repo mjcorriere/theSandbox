@@ -15,3 +15,11 @@ input {
 #fincalc .row.labels {
 	padding-top: 0;
 }
+
+#chart {
+	height: 500px;
+}
+
+#fincalc .tick line {
+	opacity: .2 !important;
+}

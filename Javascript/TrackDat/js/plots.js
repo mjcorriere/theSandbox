@@ -1,11 +1,3 @@
-/*
-
-	Create the velocity vs position plot and G/G plot.
-	This version currently creates fake data for the plots as placeholders.
-	Future version will take data from the filereader at trackdat.js
-
-*/
-
 
 var lineChart, ggPlot;
 
@@ -20,7 +12,7 @@ function plotData() {
 
 	data = [];
 
-	trackDat.laps.forEach( function(lap) {
+	TrackX.laps.forEach( function(lap) {
 		data.push({
 			key: 'Lap #' + lap.lapID,
 			values: lap.speed,
@@ -36,7 +28,7 @@ function scatterData() {
 
 	data = []
 
-	trackDat.laps.forEach( function(lap) {
+	TrackX.laps.forEach( function(lap) {
 
 		data.push({
 			key: 'Lap #' + lap.lapID,
@@ -100,8 +92,6 @@ function initCharts() {
 			.axisLabel('Velocity (km/h)')
 			.axisLabelDistance(40)
 			.tickFormat(d3.format('d'));
-
-		// lineChart.yDomain([0, 200]);
 
 		lineChart.y2Axis
 			.tickFormat(d3.format('d'));			
