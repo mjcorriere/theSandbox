@@ -1,0 +1,105 @@
+<html>
+    <head>
+        <style>
+            body {
+                height: 100%;
+                margin: 0;
+                background-color: #0e2439;
+                color: #fff;
+            }
+            #clock {
+                height: 90%;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            #after-clock {
+                height: 10%;
+                color: #1f364d;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }            
+            h1 {
+                font-size: 4em;
+                font-size: 4.5vw;
+                display: inline-block;
+                margin: 0;
+                margin-right: 0.35em;                
+            }
+            p {
+                display: inline-block;
+                font-size: 2.5em;
+                font-size: 2.5vw;
+                color: #ccc;
+                margin: 0;
+                margin-right: .7em;
+            }
+            p:last-of-type {
+                display: block;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="clock">
+            <h1 id="years"></h1><p>years</p>
+            <h1 id="days"></h1><p>days</p>
+            <h1 id="hours"></h1><p>hours</p>
+            <h1 id="minutes"></h1><p>minutes</p>
+            <h1 id="seconds"></h1><p>seconds</p>
+        </div>
+        <div id="after-clock"><h2 id="ticktock"></h2></div>
+        
+
+        <script type="text/javascript">
+            var DAYS_PER_YEAR = 365.2422;
+            var MS_PER_SEC  = 1000;
+            var MS_PER_MIN  = MS_PER_SEC * 60;
+            var MS_PER_HOUR = MS_PER_MIN * 60;
+            var MS_PER_DAY  = MS_PER_HOUR * 24;
+            var MS_PER_YEAR = DAYS_PER_YEAR * MS_PER_DAY;
+            
+            var birthday = new Date("Jan 3, 1983 3:17:00").getTime();
+
+            function pad(num, size) {
+                var s = num + "";
+                while (s.length < size) s = "0" + s;
+                return s;
+            }
+
+
+            function update() {
+                
+                var delta   = Date.now() - birthday;
+                var years   = delta / MS_PER_YEAR;
+                var days    = (delta % MS_PER_YEAR) / MS_PER_DAY;
+                var hours   = (delta % MS_PER_YEAR % MS_PER_DAY) / MS_PER_HOUR;
+                var minutes = (delta % MS_PER_YEAR % MS_PER_DAY % MS_PER_HOUR) / MS_PER_MIN;
+                var seconds = (delta % MS_PER_YEAR % MS_PER_DAY % MS_PER_HOUR % MS_PER_MIN) / MS_PER_SEC;
+
+                document.getElementById("years").innerText   = Math.floor(years);
+                document.getElementById("days").innerText    = ": " + pad(Math.floor(days), 3);
+                document.getElementById("hours").innerText   = ": " + pad(Math.floor(hours), 2);
+                document.getElementById("minutes").innerText = ": " + pad(Math.floor(minutes), 2);
+                document.getElementById("seconds").innerText = ": " + pad(seconds.toFixed(3), 6);
+            }
+
+            var tick = true;
+            function ticktock() {
+                if (tick) {
+                    tick = false;
+                    document.getElementById("ticktock").innerText = "tick";
+                } else {
+                    tick = true;
+                    document.getElementById("ticktock").innerText = "tock";
+                } 
+            }
+
+            window.setInterval(update, 53);
+            window.setInterval(ticktock, 1000);
+
+        </script>
+    </body>
+</html>
